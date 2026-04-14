@@ -23,11 +23,11 @@ namespace ApiAlumnos2026.Migrations
 
             modelBuilder.Entity("ApiAlumnos2026.Models.NotaAlumno", b =>
                 {
-                    b.Property<int>("AlumnoID")
+                    b.Property<int>("NotaAlumnoID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AlumnoID"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotaAlumnoID"));
 
                     b.Property<int>("DNI")
                         .HasColumnType("int");
@@ -38,7 +38,7 @@ namespace ApiAlumnos2026.Migrations
                     b.Property<int>("Nota")
                         .HasColumnType("int");
 
-                    b.HasKey("AlumnoID");
+                    b.HasKey("NotaAlumnoID");
 
                     b.ToTable("NotasAlumnos");
                 });

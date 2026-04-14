@@ -32,7 +32,7 @@ namespace ApiAlumnos2026.Controllers
             {
                 var mostrarNotaAlumno = new VistaNotaAlumno
                 {
-                    AlumnoID = notaAlumno.AlumnoID,
+                    NotaAlumnoID = notaAlumno.NotaAlumnoID,
                     NombreCompleto = notaAlumno.NombreCompleto,
                     DNI = notaAlumno.DNI,
                     Nota = notaAlumno.Nota
@@ -64,7 +64,7 @@ namespace ApiAlumnos2026.Controllers
     [HttpPut("{id}")]
         public async Task<IActionResult> PutNotaAlumno(int id, NotaAlumno notaAlumno)
         {
-            if (id != notaAlumno.AlumnoID)
+            if (id != notaAlumno.NotaAlumnoID)
             {
                 return BadRequest();
             }
@@ -108,7 +108,7 @@ namespace ApiAlumnos2026.Controllers
             _context.NotasAlumnos.Add(notaAlumno);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetNotaAlumno", new { id = notaAlumno.AlumnoID }, notaAlumno);
+            return CreatedAtAction("GetNotaAlumno", new { id = notaAlumno.NotaAlumnoID }, notaAlumno);
         }
 
         // DELETE: api/NotasAlumnos/5 esta seccion del aplicativo no se usa el delete
@@ -129,7 +129,7 @@ namespace ApiAlumnos2026.Controllers
 
         private bool NotaAlumnoExists(int id)
         {
-            return _context.NotasAlumnos.Any(e => e.AlumnoID == id);
+            return _context.NotasAlumnos.Any(e => e.NotaAlumnoID == id);
         }
     }
 }

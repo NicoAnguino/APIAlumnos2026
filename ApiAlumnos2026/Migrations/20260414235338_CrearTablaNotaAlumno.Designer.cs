@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiAlumnos2026.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260326184518_MigracionIdentity")]
-    partial class MigracionIdentity
+    [Migration("20260414235338_CrearTablaNotaAlumno")]
+    partial class CrearTablaNotaAlumno
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -23,6 +23,28 @@ namespace ApiAlumnos2026.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ApiAlumnos2026.Models.NotaAlumno", b =>
+                {
+                    b.Property<int>("NotaAlumnoID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotaAlumnoID"));
+
+                    b.Property<int>("DNI")
+                        .HasColumnType("int");
+
+                    b.Property<string>("NombreCompleto")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Nota")
+                        .HasColumnType("int");
+
+                    b.HasKey("NotaAlumnoID");
+
+                    b.ToTable("NotasAlumnos");
+                });
 
             modelBuilder.Entity("ApplicationUser", b =>
                 {

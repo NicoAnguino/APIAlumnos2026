@@ -34,11 +34,11 @@ async function ObtenerNotasAlumnos() {
             <td>${nota.dni} </td>
             <td>${nota.nota} </td>
             <td>
-                <button class="btn btn-sm btn-primary me-2" onclick="AbrirModalEditar(${nota.alumnoID})">Editar</button>
+                <button class="btn btn-sm btn-primary me-2" onclick="AbrirModalEditar(${nota.notaAlumnoID})">Editar</button>
 
             </td>
             <td>
-                <button class="btn btn-sm btn-danger me-2" onclick="Eliminar(${nota.alumnoID})">Eliminar</button>
+                <button class="btn btn-sm btn-danger me-2" onclick="Eliminar(${nota.notaAlumnoID})">Eliminar</button>
             </td>
         `;
 
@@ -84,7 +84,7 @@ async function AbrirModalEditar(id) {
     const nota = await respuesta.json();
     //console.log(tipoActividad);
 
-    document.getElementById("alumnoId").value = nota.alumnoID;
+    document.getElementById("notaAlumnoID").value = nota.notaAlumnoID;
     document.getElementById("alumnoNombre").value = nota.nombreCompleto;
     document.getElementById("dni").value = nota.dni;
     document.getElementById("nota").value = nota.nota;
@@ -110,21 +110,21 @@ async function GuardarNota() {
   //   return;
   // }
 
-  const alumnoId = document.getElementById("alumnoId").value;
+  const notaAlumnoID = document.getElementById("notaAlumnoID").value;
   const nombreAlumno = document.getElementById("alumnoNombre").value.trim();
   const nota = document.getElementById("nota").value.trim();
   const dni = document.getElementById("dni").value.trim();
 
   const notaAlumno = {
-    AlumnoID: alumnoId,
+    notaAlumnoID: notaAlumnoID,
     NombreCompleto: nombreAlumno,
     DNI: dni,
     Nota: nota
   };
 
   if (nota > 0 && nota <= 10) {
-    if (alumnoId > 0) {
-      const respuesta = await fetch(`${linkApi}/NotasAlumnos/${alumnoId}`, {
+    if (notaAlumnoID > 0) {
+      const respuesta = await fetch(`${linkApi}/NotasAlumnos/${notaAlumnoID}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
@@ -179,7 +179,7 @@ async function Eliminar(id) {
 
 
 async function LimpiarModal() {
-  document.getElementById("alumnoId").value = 0;
+  document.getElementById("notaAlumnoID").value = 0;
   document.getElementById("alumnoNombre").value = "";
   document.getElementById("dni").value = "";
   document.getElementById("nota").value = "";

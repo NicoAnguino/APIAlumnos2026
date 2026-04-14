@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiAlumnos2026.Migrations
 {
     /// <inheritdoc />
-    public partial class MigracionIdentity : Migration
+    public partial class CrearTablaNotaAlumno : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,6 +49,21 @@ namespace ApiAlumnos2026.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NotasAlumnos",
+                columns: table => new
+                {
+                    NotaAlumnoID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    NombreCompleto = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Nota = table.Column<int>(type: "int", nullable: false),
+                    DNI = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NotasAlumnos", x => x.NotaAlumnoID);
                 });
 
             migrationBuilder.CreateTable(
@@ -214,6 +229,9 @@ namespace ApiAlumnos2026.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "NotasAlumnos");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
