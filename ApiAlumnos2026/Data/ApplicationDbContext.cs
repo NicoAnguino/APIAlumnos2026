@@ -19,4 +19,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     // Agrega tus DbSet aquí
     public DbSet<NotaAlumno> NotasAlumnos { get; set; }
+    public DbSet<Alumno> Alumnos { get; set; }
+    public DbSet<Docente> Docentes { get; set; }
+    public DbSet<Asignatura> Asignaturas { get; set; }
 }

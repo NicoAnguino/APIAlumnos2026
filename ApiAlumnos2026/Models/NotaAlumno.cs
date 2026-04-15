@@ -6,10 +6,11 @@ namespace ApiAlumnos2026.Models
     {
         [Key]
         public int NotaAlumnoID {get;set;}
-        //public int AlumnoID { get; set; }
+        public int AlumnoID { get; set; }
+        public int AsignaturaID { get; set; }
         public string? NombreCompleto { get; set; }
         public int Nota { get; set; }       
-        public int DNI {get; set; }
+        public int DNI {get; set; }   
     }
 
 

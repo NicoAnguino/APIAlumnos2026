@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiAlumnos2026.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260415000026_CrearTablasRelacionadas")]
+    partial class CrearTablasRelacionadas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,72 +23,6 @@ namespace ApiAlumnos2026.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("ApiAlumnos2026.Models.Alumno", b =>
-                {
-                    b.Property<int>("AlumnoID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AlumnoID"));
-
-                    b.Property<int>("DNI")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Domicilio")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NombreCompleto")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Sexo")
-                        .HasColumnType("int");
-
-                    b.HasKey("AlumnoID");
-
-                    b.ToTable("Alumnos");
-                });
-
-            modelBuilder.Entity("ApiAlumnos2026.Models.Asignatura", b =>
-                {
-                    b.Property<int>("AsignaturaID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AsignaturaID"));
-
-                    b.Property<string>("Descripcion")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Eliminado")
-                        .HasColumnType("bit");
-
-                    b.HasKey("AsignaturaID");
-
-                    b.ToTable("Asignaturas");
-                });
-
-            modelBuilder.Entity("ApiAlumnos2026.Models.Docente", b =>
-                {
-                    b.Property<int>("DocenteID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("DocenteID"));
-
-                    b.Property<int>("DNI")
-                        .HasColumnType("int");
-
-                    b.Property<string>("NombreCompleto")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Sexo")
-                        .HasColumnType("int");
-
-                    b.HasKey("DocenteID");
-
-                    b.ToTable("Docentes");
-                });
 
             modelBuilder.Entity("ApiAlumnos2026.Models.NotaAlumno", b =>
                 {

@@ -8,7 +8,6 @@ namespace ApiAlumnos2026.Models
         public int DocenteID { get; set; }
         public string? NombreCompleto { get; set; }
         public int DNI {get; set; }
-
         public Sexo Sexo {get; set;}
     }
 
@@ -18,6 +17,4 @@ namespace ApiAlumnos2026.Models
         Femenino,
         Otro
     }
-
-
 }
