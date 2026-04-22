@@ -17,7 +17,7 @@ async function ObtenerAlumnos() {
   });
 
   const alumnos = await respuesta.json();
-  console.log(alumnos);
+  //console.log(alumnos);
 
   LimpiarModal();
 

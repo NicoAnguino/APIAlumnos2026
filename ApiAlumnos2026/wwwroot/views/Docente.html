@@ -1,0 +1,86 @@
+<div class="container mt-3">
+
+  <section>
+    <article>
+
+      <h2>Docentes</h2>
+
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDocente">
+        NUEVO
+      </button>
+
+      <!-- Modal crear tipo actiidad -->
+      <div class="modal fade" id="modalDocente" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5">DATOS PERSONALES</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                onclick="LimpiarModal()"></button>
+            </div>
+            <div class="modal-body">
+              <form class="formDocente">
+                <input type="hidden" id="docenteID" value="0" disabled />
+
+                <div class="mb-3">
+                  <label for="docenteNombre" class="form-label">Nombre Completo</label>
+                  <input type="text" class="form-control input-requerido" id="docenteNombre"
+                    placeholder="Ingrese el nombre completo" style="text-transform: uppercase" />
+                  <!-- <span class="error-texto" id="errorNombre">Campo obligatorio</span> -->
+                </div>
+
+                <div class="mb-3">
+                  <label for="dni" class="form-label">DNI</label>
+                  <input type="number" class="form-control input-requerido" id="dni" placeholder="Ingrese el DNI" />
+                  <!-- <span class="error-texto" id="errorDni">Campo obligatorio</span> -->
+                </div>
+
+                <div class="mb-3">
+                  <label for="sexo" class="form-label">Sexo</label>
+                 <select id="sexo" class="form-control">
+                    <option value="1">Masculino</option>
+                    <option value="2">Femenino</option>
+                    <option value="3">Otro</option>
+                 </select>
+                </div>
+
+                 <!-- <div class="mb-3">
+                  <label for="domicilio" class="form-label">Domicilio</label>
+                  <input type="text" class="form-control input-requerido" id="domicilio"
+                    placeholder="Ingrese el domicilio" style="text-transform: uppercase" />
+                </div> -->
+
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                onclick="LimpiarModal()">Cancelar</button>
+              <button type="button" class="btn btn-primary" onclick="Guardar()">Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Docente</th>
+            <th scope="col">DNI</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody id="tbody-docentes">
+
+        </tbody>
+      </table>
+
+
+   
+      <script src="../js/docente.js"></script>
+    </article>
+  </section>
+
+</div>
