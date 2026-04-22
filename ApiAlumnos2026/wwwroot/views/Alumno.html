@@ -3,31 +3,30 @@
   <section>
     <article>
 
-      <h2>Notas de Alumnos</h2>
-
+      <h2>Alumnos</h2>
 
       <!-- Button trigger modal -->
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNotaAlumno">
-        NUEVA NOTA
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAlumno">
+        NUEVO ALUMNO
       </button>
 
       <!-- Modal crear tipo actiidad -->
-      <div class="modal fade" id="modalNotaAlumno" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="modalAlumno" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5">NUEVA NOTA</h1>
+              <h1 class="modal-title fs-5">DATOS ALUMNO</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                 onclick="LimpiarModal()"></button>
             </div>
             <div class="modal-body">
-              <form class="formNotaAlumno">
-                <input type="hidden" id="notaAlumnoID" value="0" disabled />
+              <form class="formAlumno">
+                <input type="hidden" id="alumnoID" value="0" disabled />
 
                 <div class="mb-3">
-                  <label for="alumnoNombre" class="form-label">Nombre del Alumno</label>
+                  <label for="alumnoNombre" class="form-label">Nombre Completo</label>
                   <input type="text" class="form-control input-requerido" id="alumnoNombre"
-                    placeholder="Ingrese un nombre completo" style="text-transform: uppercase" />
+                    placeholder="Ingrese el nombre completo" style="text-transform: uppercase" />
                   <!-- <span class="error-texto" id="errorNombre">Campo obligatorio</span> -->
                 </div>
 
@@ -38,9 +37,18 @@
                 </div>
 
                 <div class="mb-3">
-                  <label for="nota" class="form-label">Nota</label>
-                  <input type="number" class="form-control input-requerido" id="nota" placeholder="Ingrese la Nota" />
-                  <!-- <span class="error-texto" id="errorNota">Campo obligatorio</span> -->
+                  <label for="sexo" class="form-label">Sexo</label>
+                 <select id="sexo" class="form-control">
+                    <option value="1">Masculino</option>
+                    <option value="2">Femenino</option>
+                    <option value="3">Otro</option>
+                 </select>
+                </div>
+
+                 <div class="mb-3">
+                  <label for="domicilio" class="form-label">Domicilio</label>
+                  <input type="text" class="form-control input-requerido" id="domicilio"
+                    placeholder="Ingrese el domicilio" style="text-transform: uppercase" />
                 </div>
 
               </form>
@@ -48,7 +56,7 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                 onclick="LimpiarModal()">Cancelar</button>
-              <button type="button" class="btn btn-primary" onclick="GuardarNota()">Guardar</button>
+              <button type="button" class="btn btn-primary" onclick="Guardar()">Guardar</button>
             </div>
           </div>
         </div>
@@ -60,19 +68,19 @@
           <tr>
             <th scope="col">Alumno</th>
             <th scope="col">DNI</th>
-            <th scope="col">Nota</th>
+            <th scope="col">Domicilio</th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
         </thead>
-        <tbody id="tbody-alumnos-notas">
+        <tbody id="tbody-alumnos">
 
         </tbody>
       </table>
 
 
-     
-      <script src="../js/notaAlumno.js"></script>
+   
+      <script src="../js/alumno.js"></script>
     </article>
   </section>
 

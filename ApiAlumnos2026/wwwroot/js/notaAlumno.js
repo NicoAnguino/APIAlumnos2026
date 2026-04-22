@@ -1,4 +1,3 @@
-let linkApi = 'http://localhost:5128/Api';
 
 async function ObtenerNotasAlumnos() {
 
@@ -173,10 +172,6 @@ async function Eliminar(id) {
     console.error("Error ELIMINAR:", error);
   }
 }
-
-
-
-
 
 async function LimpiarModal() {
   document.getElementById("notaAlumnoID").value = 0;

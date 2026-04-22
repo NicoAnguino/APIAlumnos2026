@@ -1,3 +1,5 @@
+let linkApi = 'http://localhost:5128/Api';
+
 function cargarComponente(id, path) {
   return fetch(path)
     .then(res => res.text())
@@ -95,6 +97,7 @@ window.addEventListener('load', actualizarLinkActivo);
 window.addEventListener('DOMContentLoaded', () => {
   cargarComponente('accordionSidebar', '../views/components/sidebar.html')
   .then(() => {//ES UNA PROMESA QUE DESENCADENA UNA ACCION
+    initSidebar(); // 👈 acá está la clave
     actualizarLinkActivo(); //Se ejecuta después de cargar el menú
   });
 
