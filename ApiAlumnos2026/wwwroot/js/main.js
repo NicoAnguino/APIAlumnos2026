@@ -98,7 +98,7 @@ window.addEventListener('DOMContentLoaded', () => {
     actualizarLinkActivo(); //Se ejecuta después de cargar el menú
   });
 
-  //cargarComponente('footer', '../components/footer.html');
+  cargarComponente('footer', '../views/components/footer.html');
   cargarVistaPorHash();
   //verificarUsuario(); //Se ejecuta después de cargar el menú
 });

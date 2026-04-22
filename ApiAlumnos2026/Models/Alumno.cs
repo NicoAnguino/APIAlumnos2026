@@ -11,5 +11,7 @@ namespace ApiAlumnos2026.Models
         public int DNI {get; set; }
         public Sexo Sexo {get; set;}
         public string? Domicilio {get;set;}
+
+        public virtual ICollection<NotaAlumno>? NotasAlumnos {get; set; }
     }
 }
