@@ -8,5 +8,9 @@ namespace ApiAlumnos2026.Models
         public int AsignaturaID { get; set; }
         public string? Descripcion { get; set; }
         public bool Eliminado {get; set; }
+
+        public virtual ICollection<NotaAlumno>? NotasAlumnos {get; set; }
     }
+
+
 }
