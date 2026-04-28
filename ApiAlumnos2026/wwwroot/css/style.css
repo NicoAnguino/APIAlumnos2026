@@ -13,6 +13,7 @@ body {
 .contenido{
     padding-top: 20px;
     margin-left: 300px;
+     margin-right: 10px;
 }
 .sidebar {
   position: fixed;

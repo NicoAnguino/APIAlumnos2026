@@ -5,21 +5,27 @@ namespace ApiAlumnos2026.Models
     public class NotaAlumno
     {
         [Key]
-        public int NotaAlumnoID {get;set;}
-        public DateTime Fecha {get;set;}
+        public int NotaAlumnoID { get; set; }
+        public DateTime Fecha { get; set; }
         public int AlumnoID { get; set; }
         public int AsignaturaID { get; set; }
-        public int Nota { get; set; }       
-        public virtual Alumno? Alumno {get; set; }
-        public virtual Asignatura? Asignatura {get; set; }
+        public int Nota { get; set; }
+        public virtual Alumno? Alumno { get; set; }
+        public virtual Asignatura? Asignatura { get; set; }
     }
 
 
     public class VistaNotaAlumno
     {
         public int NotaAlumnoID { get; set; }
+        public int AlumnoID { get; set; }
         public string? NombreCompleto { get; set; }
-        public int Nota { get; set; }  
-        public int DNI {get; set; }     
+        public int AsignaturaID { get; set; }
+
+        public string? AsignaturaNombre { get; set; }
+        public string? FechaString {get;set;}
+         public string? FechaStringInput {get;set;}
+        public int Nota { get; set; }
+        public int DNI { get; set; }
     }
 }

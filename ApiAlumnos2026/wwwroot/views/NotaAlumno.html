@@ -16,7 +16,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5">NUEVA NOTA</h1>
+              <h1 class="modal-title fs-5">INFORMACIÓN DE LA NOTA</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                 onclick="LimpiarModal()"></button>
             </div>
@@ -25,16 +25,22 @@
                 <input type="hidden" id="notaAlumnoID" value="0" disabled />
 
                 <div class="mb-3">
-                  <label for="alumnoNombre" class="form-label">Nombre del Alumno</label>
-                  <input type="text" class="form-control input-requerido" id="alumnoNombre"
-                    placeholder="Ingrese un nombre completo" style="text-transform: uppercase" />
-                  <!-- <span class="error-texto" id="errorNombre">Campo obligatorio</span> -->
+                  <label for="selectAlumnos" class="form-label">Alumno</label>
+                  <select id="selectAlumnos" class="form-control">
+
+                  </select>
                 </div>
 
                 <div class="mb-3">
-                  <label for="dni" class="form-label">DNI</label>
-                  <input type="number" class="form-control input-requerido" id="dni" placeholder="Ingrese el DNI" />
-                  <!-- <span class="error-texto" id="errorDni">Campo obligatorio</span> -->
+                  <label for="selectAsignaturas" class="form-label">Asignatura</label>
+                  <select id="selectAsignaturas" class="form-control">
+
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label for="fecha" class="form-label">Fecha</label>
+                  <input type="date" class="form-control" id="fecha" />
                 </div>
 
                 <div class="mb-3">
@@ -58,6 +64,7 @@
       <table class="table">
         <thead>
           <tr>
+            <th scope="col">Fecha</th>
             <th scope="col">Alumno</th>
             <th scope="col">DNI</th>
             <th scope="col">Nota</th>
@@ -71,7 +78,7 @@
       </table>
 
 
-     
+
       <script src="../js/notaAlumno.js"></script>
     </article>
   </section>

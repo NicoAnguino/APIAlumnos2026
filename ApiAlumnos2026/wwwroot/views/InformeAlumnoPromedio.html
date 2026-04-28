@@ -1,0 +1,35 @@
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0">Listado de Promedio de Alumnos</h1>
+</div>
+
+<div class="p-3 mb-2 bg-white text-dark">
+<div class="row">
+  <div class="col-md-2 mb-2">
+        <label class="control-label">Desde</label>
+        <input class="form-control form-control-sm" type="date" id="FechaDesdeBuscar"/>
+    </div>
+  <div class="col-md-2 mb-2">
+        <label class="control-label">Hasta</label>
+        <input class="form-control form-control-sm" type="date" id="FechaHastaBuscar"/>
+    </div>
+    <div class="col-md-4 mb-2">
+        <label class="control-label">Asignatura</label>
+        <select class="form-control form-control-sm" id="selectAsignaturas"></select>
+    </div>
+</div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-sm" id="tablaAlumnos" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Alumno</th>
+                <th class="text-center" style="width: 100px;">DNI</th>
+                <th class="text-center" style="width: 100px;">Promedio</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+<script src="../js/informeAlumnoPromedio.js"></script>

@@ -26,14 +26,19 @@ namespace ApiAlumnos2026.Controllers
         {
             List<VistaNotaAlumno> vistaNotasAlumnos = new List<VistaNotaAlumno>();
 
-            var notasAlumnos = await _context.NotasAlumnos.Include(a => a.Alumno).OrderBy(n => n.Alumno.NombreCompleto).ToListAsync();
+            var notasAlumnos = await _context.NotasAlumnos.Include(a => a.Asignatura).Include(a => a.Alumno).OrderBy(n => n.Alumno.NombreCompleto).ToListAsync();
 
             foreach (var notaAlumno in notasAlumnos)
             {
                 var mostrarNotaAlumno = new VistaNotaAlumno
                 {
                     NotaAlumnoID = notaAlumno.NotaAlumnoID,
+                    AlumnoID = notaAlumno.AlumnoID,
                     NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
+                    AsignaturaID = notaAlumno.AsignaturaID,
+                    AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
+                    FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
+                    FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
                     DNI = notaAlumno.Alumno.DNI,
                     Nota = notaAlumno.Nota
                 };
@@ -42,50 +47,63 @@ namespace ApiAlumnos2026.Controllers
             }
 
 
-            //traspaso de datos
+            // //traspaso de datos
 
-            //BUSCAR LAS NOTA ALUMNOS PARA SACAR LA INFO DE ALUMNOS
-            foreach (var notaAlumno in notasAlumnos)
-            {
-                //BUSCAR EN LA TABLA ALUMNO SI EXISTE ESE ALUMNO
-                var alumno = _context.Alumnos.Where(a => a.DNI == notaAlumno.Alumno.DNI).SingleOrDefault();
-                if (alumno == null)
-                {
-                    // //CREAR ALUMNO
-                    alumno = new Alumno
-                    {
-                        NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
-                        DNI = notaAlumno.Alumno.DNI,
-                        Sexo = Sexo.Otro,
-                        Domicilio = ""
-                    };
-                    //LO AGREGAMOS A LA TABLA
-                     _context.Alumnos.Add(alumno);
-                     //GUARDAMOS LOS CAMBIOS
-                    await _context.SaveChangesAsync();
+            // //BUSCAR LAS NOTA ALUMNOS PARA SACAR LA INFO DE ALUMNOS
+            // foreach (var notaAlumno in notasAlumnos)
+            // {
+            //     //BUSCAR EN LA TABLA ALUMNO SI EXISTE ESE ALUMNO
+            //     var alumno = _context.Alumnos.Where(a => a.DNI == notaAlumno.Alumno.DNI).SingleOrDefault();
+            //     if (alumno == null)
+            //     {
+            //         // //CREAR ALUMNO
+            //         alumno = new Alumno
+            //         {
+            //             NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
+            //             DNI = notaAlumno.Alumno.DNI,
+            //             Sexo = Sexo.Otro,
+            //             Domicilio = ""
+            //         };
+            //         //LO AGREGAMOS A LA TABLA
+            //          _context.Alumnos.Add(alumno);
+            //          //GUARDAMOS LOS CAMBIOS
+            //         await _context.SaveChangesAsync();
 
-                    //ASIGNAMOS EL ALUMNOID GENERADO AL REGISTRO DE NOTA ALUMNO
-                    notaAlumno.AlumnoID = alumno.AlumnoID;
-                      await _context.SaveChangesAsync();
-                }
-            }
-            //fin traspaso de datos
+            //         //ASIGNAMOS EL ALUMNOID GENERADO AL REGISTRO DE NOTA ALUMNO
+            //         notaAlumno.AlumnoID = alumno.AlumnoID;
+            //           await _context.SaveChangesAsync();
+            //     }
+            // }
+            // //fin traspaso de datos
 
             return vistaNotasAlumnos; 
         }
 
         // GET: api/NotasAlumnos/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<NotaAlumno>> GetNotaAlumno(int id)
+        public async Task<ActionResult<VistaNotaAlumno>> GetNotaAlumno(int id)
         {
-            var notaAlumno = await _context.NotasAlumnos.FindAsync(id);
+            var notaAlumno = await _context.NotasAlumnos.Include(a => a.Asignatura).Include(a => a.Alumno).Where(n => n.NotaAlumnoID == id).SingleOrDefaultAsync();
 
             if (notaAlumno == null)
             {
                 return NotFound();
             }
 
-            return notaAlumno;
+             var mostrarNotaAlumno = new VistaNotaAlumno
+                {
+                    NotaAlumnoID = notaAlumno.NotaAlumnoID,
+                    AlumnoID = notaAlumno.AlumnoID,
+                    NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
+                    AsignaturaID = notaAlumno.AsignaturaID,
+                    AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
+                    FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
+                    FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
+                    DNI = notaAlumno.Alumno.DNI,
+                    Nota = notaAlumno.Nota
+                };
+
+            return mostrarNotaAlumno;
         }
 
 
@@ -98,8 +116,6 @@ namespace ApiAlumnos2026.Controllers
             {
                 return BadRequest();
             }
-
-            //notaAlumno.NombreCompleto = notaAlumno.NombreCompleto?.ToUpper();
 
             _context.Entry(notaAlumno).State = EntityState.Modified;
 
@@ -125,15 +141,7 @@ namespace ApiAlumnos2026.Controllers
     [HttpPost]
         public async Task<ActionResult<NotaAlumno>> PostNotaAlumno(NotaAlumno notaAlumno)
         {
-
-            //notaAlumno.NombreCompleto = notaAlumno.NombreCompleto?.ToUpper();
-
-            // var alumnoExiste = await _context.NotasAlumnos.Where(t => t.NombreCompleto == notaAlumno.NombreCompleto).FirstOrDefaultAsync();
-
-            // if (alumnoExiste != null)
-            // {
-            //      return Conflict(new { mensaje = "Ya existe un tipo de actividad con ese nombre." });
-            // }   
+ 
             
             _context.NotasAlumnos.Add(notaAlumno);
             await _context.SaveChangesAsync();

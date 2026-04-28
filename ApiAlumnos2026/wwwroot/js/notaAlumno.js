@@ -1,12 +1,62 @@
 
+
+async function ObtenerAlumnos() {
+
+  const respuesta = await fetch(`${linkApi}/Alumnos`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+
+  const alumnos = await respuesta.json();
+
+  const comboSelect = document.querySelector("#selectAlumnos");
+  comboSelect.innerHTML = "";
+
+
+  let opciones = '';
+  alumnos.forEach((alumno) => {
+    opciones += `<option value="${alumno.alumnoID}">${alumno.nombreCompleto}</option>`;
+  });
+  comboSelect.innerHTML = opciones;
+
+  ObtenerAsignaturas();
+}
+
+async function ObtenerAsignaturas() {
+
+  const respuesta = await fetch(`${linkApi}/Asignaturas`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+
+  const asignaturas = await respuesta.json();
+
+  const comboSelect = document.querySelector("#selectAsignaturas");
+  comboSelect.innerHTML = "";
+
+
+  let opciones = '';
+  asignaturas.forEach((asignatura) => {
+    opciones += `<option value="${asignatura.asignaturaID}">${asignatura.descripcion}</option>`;
+  });
+  comboSelect.innerHTML = opciones;
+  
+  ObtenerNotasAlumnos();
+}
+
+
 async function ObtenerNotasAlumnos() {
 
 
- var modal = bootstrap.Modal.getOrCreateInstance(
-      document.getElementById('modalNotaAlumno')
-    );
+  var modal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById('modalNotaAlumno')
+  );
 
-    modal.hide();
+  modal.hide();
 
   const respuesta = await fetch(`${linkApi}/NotasAlumnos`, {
     method: "GET",
@@ -29,6 +79,7 @@ async function ObtenerNotasAlumnos() {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
+       <td>${nota.fechaString}</td>
             <td>${nota.nombreCompleto}</td>
             <td>${nota.dni} </td>
             <td>${nota.nota} </td>
@@ -84,11 +135,10 @@ async function AbrirModalEditar(id) {
     //console.log(tipoActividad);
 
     document.getElementById("notaAlumnoID").value = nota.notaAlumnoID;
-    document.getElementById("alumnoNombre").value = nota.nombreCompleto;
-    document.getElementById("dni").value = nota.dni;
+    document.getElementById("selectAlumnos").value = nota.alumnoID;
+    document.getElementById("selectAsignaturas").value = nota.asignaturaID;
+    document.getElementById("fecha").value = nota.fechaStringInput;
     document.getElementById("nota").value = nota.nota;
-
-    // $("#modalNotaAlumno").modal("show");
 
     var modal = bootstrap.Modal.getOrCreateInstance(
       document.getElementById('modalNotaAlumno')
@@ -103,21 +153,18 @@ async function AbrirModalEditar(id) {
 
 async function GuardarNota() {
 
-  const form = document.querySelector(".formNotaAlumno");
-
-  // if (!validarCamposRequeridos(form)) {
-  //   return;
-  // }
-
   const notaAlumnoID = document.getElementById("notaAlumnoID").value;
-  const nombreAlumno = document.getElementById("alumnoNombre").value.trim();
+  const alumnoID = document.getElementById("selectAlumnos").value.trim();
+  const asignaturaID = document.getElementById("selectAsignaturas").value.trim();
+  const fecha = document.getElementById("fecha").value.trim();
   const nota = document.getElementById("nota").value.trim();
-  const dni = document.getElementById("dni").value.trim();
+
 
   const notaAlumno = {
     notaAlumnoID: notaAlumnoID,
-    NombreCompleto: nombreAlumno,
-    DNI: dni,
+    alumnoID: alumnoID,
+    asignaturaID: asignaturaID,
+    fecha: fecha,
     Nota: nota
   };
 
@@ -163,9 +210,6 @@ async function Eliminar(id) {
       throw new Error("No se pudo obtener el dato");
     }
 
-    //const nota = await respuesta.json();
-    //console.log(tipoActividad);
-
     ObtenerNotasAlumnos();
 
   } catch (error) {
@@ -174,10 +218,19 @@ async function Eliminar(id) {
 }
 
 async function LimpiarModal() {
+var fechaActual = new Date();
+
+var anio = fechaActual.getFullYear();
+var mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
+var dia = fechaActual.getDate().toString().padStart(2, '0');
+
+var fechaStringInput = anio + "-" + mes + "-" + dia;
+//console.log(fechaStringInput);
+
   document.getElementById("notaAlumnoID").value = 0;
-  document.getElementById("alumnoNombre").value = "";
-  document.getElementById("dni").value = "";
+  // document.getElementById("alumnoNombre").value = "";
+  document.getElementById("fecha").value = fechaStringInput;
   document.getElementById("nota").value = "";
 }
 
-ObtenerNotasAlumnos();
+ObtenerAlumnos();
