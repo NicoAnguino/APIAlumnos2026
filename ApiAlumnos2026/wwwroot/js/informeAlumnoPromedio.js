@@ -1,26 +1,41 @@
 //HACER PRIMERO EL METODO PARA ARMAR EL COMBO DESPLEGABLE DE CATEGORIAS
 async function ObtenerAsignaturas() {
 
-  const respuesta = await fetch(`${linkApi}/Asignaturas`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+    const respuesta = await fetch(`${linkApi}/Asignaturas`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    });
 
-  const asignaturas = await respuesta.json();
+    const asignaturas = await respuesta.json();
 
-  const comboSelect = document.querySelector("#selectAsignaturas");
-  comboSelect.innerHTML = "";
+    const comboSelect = document.querySelector("#selectAsignaturas");
+    comboSelect.innerHTML = "";
 
 
-  let opciones = `<option value="0">[TODAS LAS ASIGNATURAS]</option>`;
-  asignaturas.forEach((asignatura) => {
-    opciones += `<option value="${asignatura.asignaturaID}">${asignatura.descripcion}</option>`;
-  });
-  comboSelect.innerHTML = opciones;
-  
-  getPromedioAlumnos();
+    let opciones = `<option value="0">[TODAS LAS ASIGNATURAS]</option>`;
+    asignaturas.forEach((asignatura) => {
+        opciones += `<option value="${asignatura.asignaturaID}">${asignatura.descripcion}</option>`;
+    });
+    comboSelect.innerHTML = opciones;
+    IniciarFechas();
+    getPromedioAlumnos();
+
+}
+
+function IniciarFechas() {
+    const hoy = new Date();
+    
+    const fechaDesde = hoy.getFullYear() + '-' +
+        String(hoy.getMonth() + 1).padStart(2, '0') + '-01';
+
+    const fechaHasta = hoy.getFullYear() + '-' +
+        String(hoy.getMonth() + 1).padStart(2, '0') + '-' +
+        String(hoy.getDate()).padStart(2, '0');
+
+    document.getElementById("FechaDesdeBuscar").value = fechaDesde;
+    document.getElementById("FechaHastaBuscar").value = fechaHasta;
 }
 
 const inputCategoria = document.getElementById("selectAsignaturas");
@@ -66,7 +81,7 @@ async function getPromedioAlumnos() {
     const alumnos = await res.json();
     const tbody = document.querySelector("#tablaAlumnos tbody");
     tbody.innerHTML = "";
- 
+
     alumnos.forEach(alumno => {
 
         const rowInsertar = document.createElement("tr");
@@ -75,7 +90,7 @@ async function getPromedioAlumnos() {
             <td class="text-center">${alumno.dni}</td>
             <td class="text-center text-bold">${alumno.promedio.toFixed(2)}</td>       
         `;
-        tbody.appendChild(rowInsertar);     
+        tbody.appendChild(rowInsertar);
 
     });
 }

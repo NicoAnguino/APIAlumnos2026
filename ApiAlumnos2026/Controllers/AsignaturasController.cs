@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiAlumnos2026.Models;
+using ApiAlumnos2026.ModelsView;
 
 namespace ApiAlumnos2026.Controllers
 {
