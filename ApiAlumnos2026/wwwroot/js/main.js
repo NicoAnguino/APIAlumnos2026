@@ -33,7 +33,7 @@ function cargarVista(view) {
 }
 
 function cargarVistaPorHash() {
-  const vista = window.location.hash.replace('#', '') || 'notaalumno';
+  const vista = window.location.hash.replace('#', '') || 'Alumnos/Alumno';
   cargarVista(vista);
   actualizarLinkActivo(); // 👈 Asegurate de actualizar los estilos del menú
 }

@@ -38,20 +38,20 @@ function IniciarFechas() {
     document.getElementById("FechaHastaBuscar").value = fechaHasta;
 }
 
-const inputCategoria = document.getElementById("selectAsignaturas");
-inputCategoria.onchange = function () {
-    getPromedioAlumnos();
-};
+//DECLARAMOS LOS EVENTOS A ESOS INPUT
+document
+  .getElementById("selectAsignaturas")
+  ?.addEventListener("change", getPromedioAlumnos);
 
-const inputFechaDesde = document.getElementById("FechaDesdeBuscar");
-inputFechaDesde.onchange = function () {
-    getPromedioAlumnos();
-};
+  document
+  .getElementById("FechaDesdeBuscar")
+  ?.addEventListener("change", getPromedioAlumnos);
 
-const inputFechaHasta = document.getElementById("FechaHastaBuscar");
-inputFechaHasta.onchange = function () {
-    getPromedioAlumnos();
-};
+  document
+  .getElementById("FechaHastaBuscar")
+  ?.addEventListener("change", getPromedioAlumnos);
+
+
 
 async function getPromedioAlumnos() {
     let fechaDesde = document.getElementById("FechaDesdeBuscar").value;
