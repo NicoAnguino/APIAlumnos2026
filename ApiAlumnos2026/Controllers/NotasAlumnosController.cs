@@ -118,79 +118,79 @@ namespace ApiAlumnos2026.Controllers
                 return BadRequest();
             }
 
-
-            //PRIMERO BUSCAR LA NOTA ALUMNO A MODIFICAR
-            var notaOriginal = _context.NotasAlumnos.Include(n => n.Asignatura).Include(n => n.Alumno).Where(n => n.NotaAlumnoID == id).Single();
-
-            //PREGUNTAR QUE CAMBIA
-            if (notaOriginal.Fecha != notaAlumno.Fecha)
-            {
-                var cambioNota = new HistorialNotaAlumno
-                {
-                    NotaAlumnoID = id,
-                    FechaCambio = DateTime.Now,
-                    CampoModificado = "FECHA",
-                    ValorAnterior = notaOriginal.Fecha.ToString("dd/MM/yyyy"),
-                    ValorNuevo = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
-                };
-                _context.HistorialNotaAlumnos.Add(cambioNota);
-                _context.SaveChanges();
-            }
-
-
-            if (notaOriginal.AlumnoID != notaAlumno.AlumnoID)
-            {
-                var alumnoNuevo = _context.Alumnos.Where(n => n.AlumnoID == notaAlumno.AlumnoID).Single();
-
-                var cambioNota = new HistorialNotaAlumno
-                {
-                    NotaAlumnoID = id,
-                    FechaCambio = DateTime.Now,
-                    CampoModificado = "ALUMNO",
-                    ValorAnterior = notaOriginal.Alumno.NombreCompleto,
-                    ValorNuevo = alumnoNuevo.NombreCompleto,
-                };
-                _context.HistorialNotaAlumnos.Add(cambioNota);
-                _context.SaveChanges();
-            }
-
-
-            if (notaOriginal.AsignaturaID != notaAlumno.AsignaturaID)
-            {
-                var asignaturaNueva = _context.Asignaturas.Where(n => n.AsignaturaID == notaAlumno.AsignaturaID).Single();
-
-                var cambioNota = new HistorialNotaAlumno
-                {
-                    NotaAlumnoID = id,
-                    FechaCambio = DateTime.Now,
-                    CampoModificado = "ASIGNATURA",
-                    ValorAnterior = notaOriginal.Asignatura.Descripcion,
-                    ValorNuevo = asignaturaNueva.Descripcion,
-                };
-                _context.HistorialNotaAlumnos.Add(cambioNota);
-                _context.SaveChanges();
-            }
-
-
-            if (notaOriginal.Nota != notaAlumno.Nota)
-            {
-                var cambioNota = new HistorialNotaAlumno
-                {
-                    NotaAlumnoID = id,
-                    FechaCambio = DateTime.Now,
-                    CampoModificado = "NOTA",
-                    ValorAnterior = notaOriginal.Nota.ToString(),
-                    ValorNuevo = notaAlumno.Nota.ToString(),
-                };
-                _context.HistorialNotaAlumnos.Add(cambioNota);
-                _context.SaveChanges();
-            }
-
-
-            _context.Entry(notaAlumno).State = EntityState.Modified;
+            //_context.Entry(notaAlumno).State = EntityState.Modified;
 
             try
             {
+
+                //PRIMERO BUSCAR LA NOTA ALUMNO A MODIFICAR
+                var notaAlumnoOriginal = _context.NotasAlumnos.Include(n => n.Asignatura).Include(n => n.Alumno).Where(n => n.NotaAlumnoID == id).Single();
+
+                //PREGUNTAR QUE CAMBIA
+                if (notaAlumnoOriginal.Fecha != notaAlumno.Fecha)
+                {
+                    var cambioNota = new HistorialNotaAlumno
+                    {
+                        NotaAlumnoID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "FECHA",
+                        ValorAnterior = notaAlumnoOriginal.Fecha.ToString("dd/MM/yyyy"),
+                        ValorNuevo = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
+                    };
+                    _context.HistorialNotaAlumnos.Add(cambioNota);
+                }
+
+
+                if (notaAlumnoOriginal.AlumnoID != notaAlumno.AlumnoID)
+                {
+                    var alumnoNuevo = _context.Alumnos.Where(n => n.AlumnoID == notaAlumno.AlumnoID).Single();
+
+                    var cambioNota = new HistorialNotaAlumno
+                    {
+                        NotaAlumnoID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "ALUMNO",
+                        ValorAnterior = notaAlumnoOriginal.Alumno.NombreCompleto,
+                        ValorNuevo = alumnoNuevo.NombreCompleto,
+                    };
+                    _context.HistorialNotaAlumnos.Add(cambioNota);
+                }
+
+
+                if (notaAlumnoOriginal.AsignaturaID != notaAlumno.AsignaturaID)
+                {
+                    var asignaturaNueva = _context.Asignaturas.Where(n => n.AsignaturaID == notaAlumno.AsignaturaID).Single();
+
+                    var cambioNota = new HistorialNotaAlumno
+                    {
+                        NotaAlumnoID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "ASIGNATURA",
+                        ValorAnterior = notaAlumnoOriginal.Asignatura.Descripcion,
+                        ValorNuevo = asignaturaNueva.Descripcion,
+                    };
+                    _context.HistorialNotaAlumnos.Add(cambioNota);
+                }
+
+
+                if (notaAlumnoOriginal.Nota != notaAlumno.Nota)
+                {
+                    var cambioNota = new HistorialNotaAlumno
+                    {
+                        NotaAlumnoID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "NOTA",
+                        ValorAnterior = notaAlumnoOriginal.Nota.ToString(),
+                        ValorNuevo = notaAlumno.Nota.ToString(),
+                    };
+                    _context.HistorialNotaAlumnos.Add(cambioNota);
+                }
+
+                notaAlumnoOriginal.AlumnoID = notaAlumno.AlumnoID;
+                notaAlumnoOriginal.AsignaturaID = notaAlumno.AsignaturaID;
+                notaAlumnoOriginal.Fecha = notaAlumno.Fecha;
+                notaAlumnoOriginal.Nota = notaAlumno.Nota;
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
