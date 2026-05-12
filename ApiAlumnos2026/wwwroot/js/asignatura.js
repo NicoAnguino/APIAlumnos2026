@@ -3,11 +3,11 @@
 async function ObtenerAsignaturas() {
 
 
- var modal = bootstrap.Modal.getOrCreateInstance(
-      document.getElementById('modalAsignatura')
-    );
+  var modal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById('modalAsignatura')
+  );
 
-    modal.hide();
+  modal.hide();
 
   const respuesta = await fetch(`${linkApi}/Asignaturas`, {
     method: "GET",
@@ -30,12 +30,16 @@ async function ObtenerAsignaturas() {
 
     tr.innerHTML = `
             <td>${asignatura.descripcion}</td>
-            <td>
-                <button class="btn btn-sm btn-primary me-2" onclick="AbrirModalEditar(${asignatura.asignaturaID})">Editar</button>
-
+            <td class="text-center columnaBtn">
+ <button class="btn btn-editar" onclick="AbrirModalEditar(${asignatura.asignaturaID})">
+        <i class="fa-solid fa-pen"></i>
+        Editar
+    </button>
             </td>
-            <td>
-                <button class="btn btn-sm btn-danger me-2" onclick="Eliminar(${asignatura.asignaturaID})">Eliminar</button>
+            <td class="text-center columnaBtn">
+                <button class="btn btn-eliminar" onclick="Eliminar(${asignatura.asignaturaID})">
+                 <i class="fa-solid fa-trash"></i>
+                 Eliminar</button>
             </td>
         `;
 

@@ -44,7 +44,7 @@ async function ObtenerAsignaturas() {
     opciones += `<option value="${asignatura.asignaturaID}">${asignatura.descripcion}</option>`;
   });
   comboSelect.innerHTML = opciones;
-  
+
   ObtenerNotasAlumnos();
 }
 
@@ -79,16 +79,26 @@ async function ObtenerNotasAlumnos() {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
-       <td>${nota.fechaString}</td>
+       <td class="text-center">${nota.fechaString}</td>
             <td>${nota.nombreCompleto}</td>
-            <td>${nota.dni} </td>
-            <td>${nota.nota} </td>
-            <td>
-                <button class="btn btn-sm btn-primary me-2" onclick="AbrirModalEditar(${nota.notaAlumnoID})">Editar</button>
-
+            <td class="ocultarElemento768">${nota.dni} </td>
+              <td>${nota.asignaturaNombre} </td>
+            
+            <td class="text-center">${nota.nota} </td>
+               <td class="text-center columnaBtn">
+                <button class="btn btn-utilidad" onclick="AbrirModalHistorial(${nota.notaAlumnoID})">
+                 <i class="fa-solid fa-history"></i>
+                 Historial</button>
             </td>
-            <td>
-                <button class="btn btn-sm btn-danger me-2" onclick="Eliminar(${nota.notaAlumnoID})">Eliminar</button>
+            <td class="text-center columnaBtn">
+                <button class="btn btn-editar" onclick="AbrirModalEditar(${nota.notaAlumnoID})">
+                 <i class="fa-solid fa-pen"></i>
+                 Editar</button>
+            </td>
+            <td class="text-center columnaBtn">
+                <button class="btn btn-eliminar" onclick="Eliminar(${nota.notaAlumnoID})">
+                 <i class="fa-solid fa-trash"></i>
+                 Eliminar</button>
             </td>
         `;
 
@@ -218,14 +228,14 @@ async function Eliminar(id) {
 }
 
 async function LimpiarModal() {
-var fechaActual = new Date();
+  var fechaActual = new Date();
 
-var anio = fechaActual.getFullYear();
-var mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
-var dia = fechaActual.getDate().toString().padStart(2, '0');
+  var anio = fechaActual.getFullYear();
+  var mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
+  var dia = fechaActual.getDate().toString().padStart(2, '0');
 
-var fechaStringInput = anio + "-" + mes + "-" + dia;
-//console.log(fechaStringInput);
+  var fechaStringInput = anio + "-" + mes + "-" + dia;
+  //console.log(fechaStringInput);
 
   document.getElementById("notaAlumnoID").value = 0;
   // document.getElementById("alumnoNombre").value = "";
@@ -234,3 +244,51 @@ var fechaStringInput = anio + "-" + mes + "-" + dia;
 }
 
 ObtenerAlumnos();
+
+
+
+async function AbrirModalHistorial(id) {
+
+  try {
+    const respuesta = await fetch(`${linkApi}/informes/HistorialNotas/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (!respuesta.ok) {
+      throw new Error("No se pudo obtener el dato");
+    }
+
+    const historial = await respuesta.json();
+
+    const bodyNotasAlumnos = document.getElementById("tbody-historial-notas");
+    bodyNotasAlumnos.innerHTML = "";
+
+    historial.forEach((nota) => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+       <td class="text-center">${nota.fechaCambioString} Hs.</td>
+            <td>${nota.campoModificado}</td>
+            <td>${nota.valorAnterior} </td>
+              <td>${nota.valorNuevo} </td>
+        `;
+
+      bodyNotasAlumnos.appendChild(tr);
+    });
+
+
+    var modal = bootstrap.Modal.getOrCreateInstance(
+      document.getElementById('modalHistorialNotaAlumno')
+    );
+
+    modal.show();
+
+  } catch (error) {
+    console.error("Error editar:", error);
+  }
+}

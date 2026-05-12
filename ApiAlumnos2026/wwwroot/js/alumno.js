@@ -3,11 +3,11 @@
 async function ObtenerAlumnos() {
 
 
- var modal = bootstrap.Modal.getOrCreateInstance(
-      document.getElementById('modalAlumno')
-    );
+//  var modal = bootstrap.Modal.getOrCreateInstance(
+//       document.getElementById('modalAlumno')
+//     );
 
-    modal.hide();
+//     modal.hide();
 
   const respuesta = await fetch(`${linkApi}/Alumnos`, {
     method: "GET",
@@ -33,12 +33,17 @@ async function ObtenerAlumnos() {
             <td>${alumno.nombreCompleto}</td>
             <td>${alumno.dni} </td>
             <td>${alumno.domicilio} </td>
-            <td>
-                <button class="btn btn-sm btn-primary me-2" onclick="AbrirModalEditar(${alumno.alumnoID})">Editar</button>
+            <td class="text-center columnaBtn">
+                <button class="btn btn-editar" onclick="AbrirModalEditar(${alumno.alumnoID})">
+                <i class="fa-solid fa-pen"></i>
+                Editar
+                </button>
 
             </td>
-            <td>
-                <button class="btn btn-sm btn-danger me-2" onclick="Eliminar(${alumno.alumnoID})">Eliminar</button>
+            <td class="text-center columnaBtn">
+                <button class="btn btn-eliminar" onclick="Eliminar(${alumno.alumnoID})">
+                 <i class="fa-solid fa-trash"></i>
+                 Eliminar</button>
             </td>
         `;
 
@@ -144,6 +149,14 @@ async function Guardar() {
         body: JSON.stringify(alumno)
       });
     }
+
+if(alumnoID > 0){
+ var modal = bootstrap.Modal.getOrCreateInstance(
+     document.getElementById('modalAlumno')
+     );
+
+    modal.hide();
+}
 
     ObtenerAlumnos();
   }

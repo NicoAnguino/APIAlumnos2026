@@ -22,4 +22,5 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Alumno> Alumnos { get; set; }
     public DbSet<Docente> Docentes { get; set; }
     public DbSet<Asignatura> Asignaturas { get; set; }
+     public DbSet<HistorialNotaAlumno> HistorialNotaAlumnos { get; set; }
 }

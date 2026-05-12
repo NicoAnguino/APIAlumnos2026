@@ -44,7 +44,7 @@ namespace ApiAlumnos2026.Controllers
                     Nota = notaAlumno.Nota
                 };
                 vistaNotasAlumnos.Add(mostrarNotaAlumno);
-                
+
             }
 
 
@@ -77,7 +77,7 @@ namespace ApiAlumnos2026.Controllers
             // }
             // //fin traspaso de datos
 
-            return vistaNotasAlumnos; 
+            return vistaNotasAlumnos;
         }
 
         // GET: api/NotasAlumnos/5
@@ -91,18 +91,18 @@ namespace ApiAlumnos2026.Controllers
                 return NotFound();
             }
 
-             var mostrarNotaAlumno = new VistaNotaAlumno
-                {
-                    NotaAlumnoID = notaAlumno.NotaAlumnoID,
-                    AlumnoID = notaAlumno.AlumnoID,
-                    NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
-                    AsignaturaID = notaAlumno.AsignaturaID,
-                    AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
-                    FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
-                    FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
-                    DNI = notaAlumno.Alumno.DNI,
-                    Nota = notaAlumno.Nota
-                };
+            var mostrarNotaAlumno = new VistaNotaAlumno
+            {
+                NotaAlumnoID = notaAlumno.NotaAlumnoID,
+                AlumnoID = notaAlumno.AlumnoID,
+                NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
+                AsignaturaID = notaAlumno.AsignaturaID,
+                AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
+                FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
+                FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
+                DNI = notaAlumno.Alumno.DNI,
+                Nota = notaAlumno.Nota
+            };
 
             return mostrarNotaAlumno;
         }
@@ -110,13 +110,82 @@ namespace ApiAlumnos2026.Controllers
 
 
         // PUT: api/NotasAlumnos/5
-    [HttpPut("{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutNotaAlumno(int id, NotaAlumno notaAlumno)
         {
             if (id != notaAlumno.NotaAlumnoID)
             {
                 return BadRequest();
             }
+
+
+            //PRIMERO BUSCAR LA NOTA ALUMNO A MODIFICAR
+            var notaOriginal = _context.NotasAlumnos.Include(n => n.Asignatura).Include(n => n.Alumno).Where(n => n.NotaAlumnoID == id).Single();
+
+            //PREGUNTAR QUE CAMBIA
+            if (notaOriginal.Fecha != notaAlumno.Fecha)
+            {
+                var cambioNota = new HistorialNotaAlumno
+                {
+                    NotaAlumnoID = id,
+                    FechaCambio = DateTime.Now,
+                    CampoModificado = "FECHA",
+                    ValorAnterior = notaOriginal.Fecha.ToString("dd/MM/yyyy"),
+                    ValorNuevo = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
+                };
+                _context.HistorialNotaAlumnos.Add(cambioNota);
+                _context.SaveChanges();
+            }
+
+
+            if (notaOriginal.AlumnoID != notaAlumno.AlumnoID)
+            {
+                var alumnoNuevo = _context.Alumnos.Where(n => n.AlumnoID == notaAlumno.AlumnoID).Single();
+
+                var cambioNota = new HistorialNotaAlumno
+                {
+                    NotaAlumnoID = id,
+                    FechaCambio = DateTime.Now,
+                    CampoModificado = "ALUMNO",
+                    ValorAnterior = notaOriginal.Alumno.NombreCompleto,
+                    ValorNuevo = alumnoNuevo.NombreCompleto,
+                };
+                _context.HistorialNotaAlumnos.Add(cambioNota);
+                _context.SaveChanges();
+            }
+
+
+            if (notaOriginal.AsignaturaID != notaAlumno.AsignaturaID)
+            {
+                var asignaturaNueva = _context.Asignaturas.Where(n => n.AsignaturaID == notaAlumno.AsignaturaID).Single();
+
+                var cambioNota = new HistorialNotaAlumno
+                {
+                    NotaAlumnoID = id,
+                    FechaCambio = DateTime.Now,
+                    CampoModificado = "ASIGNATURA",
+                    ValorAnterior = notaOriginal.Asignatura.Descripcion,
+                    ValorNuevo = asignaturaNueva.Descripcion,
+                };
+                _context.HistorialNotaAlumnos.Add(cambioNota);
+                _context.SaveChanges();
+            }
+
+
+            if (notaOriginal.Nota != notaAlumno.Nota)
+            {
+                var cambioNota = new HistorialNotaAlumno
+                {
+                    NotaAlumnoID = id,
+                    FechaCambio = DateTime.Now,
+                    CampoModificado = "NOTA",
+                    ValorAnterior = notaOriginal.Nota.ToString(),
+                    ValorNuevo = notaAlumno.Nota.ToString(),
+                };
+                _context.HistorialNotaAlumnos.Add(cambioNota);
+                _context.SaveChanges();
+            }
+
 
             _context.Entry(notaAlumno).State = EntityState.Modified;
 
@@ -139,11 +208,11 @@ namespace ApiAlumnos2026.Controllers
             return NoContent();
         }
 
-    [HttpPost]
+        [HttpPost]
         public async Task<ActionResult<NotaAlumno>> PostNotaAlumno(NotaAlumno notaAlumno)
         {
- 
-            
+
+
             _context.NotasAlumnos.Add(notaAlumno);
             await _context.SaveChangesAsync();
 
@@ -151,7 +220,7 @@ namespace ApiAlumnos2026.Controllers
         }
 
         // DELETE: api/NotasAlumnos/5 esta seccion del aplicativo no se usa el delete
-         [HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteNotaAlumno(int id)
         {
             var notaAlumno = await _context.NotasAlumnos.FindAsync(id);
@@ -164,7 +233,7 @@ namespace ApiAlumnos2026.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
-        } 
+        }
 
         private bool NotaAlumnoExists(int id)
         {

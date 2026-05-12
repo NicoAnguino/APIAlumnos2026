@@ -32,12 +32,16 @@ async function ObtenerDocentes() {
     tr.innerHTML = `
             <td>${docente.nombreCompleto}</td>
             <td>${docente.dni} </td>
-            <td>
-                <button class="btn btn-sm btn-primary me-2" onclick="AbrirModalEditar(${docente.docenteID})">Editar</button>
+            <td class="text-center columnaBtn">
+                <button class="btn btn-editar" onclick="AbrirModalEditar(${docente.docenteID})">
+                  <i class="fa-solid fa-pen"></i>
+                  Editar</button>
 
             </td>
-            <td>
-                <button class="btn btn-sm btn-danger me-2" onclick="Eliminar(${docente.docenteID})">Eliminar</button>
+            <td class="text-center columnaBtn">
+                <button class="btn btn-eliminar" onclick="Eliminar(${docente.docenteID})">
+                   <i class="fa-solid fa-trash"></i>
+                   Eliminar</button>
             </td>
         `;
 

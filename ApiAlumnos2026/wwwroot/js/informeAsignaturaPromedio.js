@@ -20,8 +20,8 @@ async function ObtenerAsignaturas() {
     });
     comboSelect.innerHTML = opciones;
     IniciarFechas();
-    ObtenerAlumnos();
-
+   
+ObtenerAlumnos();
 }
 
 async function ObtenerAlumnos() {
@@ -67,7 +67,7 @@ document
   .getElementById("selectAsignaturas")
   ?.addEventListener("change", getPromedioAlumnos);
 
-    document
+  document
   .getElementById("selectAlumnos")
   ?.addEventListener("change", getPromedioAlumnos);
 
@@ -99,7 +99,7 @@ async function getPromedioAlumnos() {
         asignaturaID: document.getElementById("selectAsignaturas").value,
         alumnoID: document.getElementById("selectAlumnos").value
     };
-    const res = await fetch(`${linkApi}/informes/promedioalumnos`, {
+    const res = await fetch(`${linkApi}/informes/promedioasignaturas`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -115,8 +115,7 @@ async function getPromedioAlumnos() {
 
         const rowInsertar = document.createElement("tr");
         rowInsertar.innerHTML = `          
-            <td>${alumno.nombreCompleto}</td>   
-            <td class="text-center">${alumno.dni}</td>
+            <td>${alumno.asignaturaNombre}</td>   
             <td class="text-center text-bold">${alumno.promedio.toFixed(2)}</td>       
         `;
         tbody.appendChild(rowInsertar);

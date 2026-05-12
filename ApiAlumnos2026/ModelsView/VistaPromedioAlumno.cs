@@ -26,4 +26,12 @@ namespace ApiAlumnos2026.ModelsView
         // public string? SexoString {get; set;}   
         // public string? Domicilio {get;set;}
     }
+
+
+     public class VistaPromedioAsignatura
+    {
+        public int AsignaturaID { get; set; }
+        public string? AsignaturaNombre { get; set; }
+        public decimal Promedio { get; set; }  
+    }
 }

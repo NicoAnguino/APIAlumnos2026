@@ -3,12 +3,12 @@
   <section>
     <article>
 
-      <h2>Notas de Alumnos</h2>
+      <h2 class="titulo-vista">Notas de Alumnos</h2>
 
 
       <!-- Button trigger modal -->
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalNotaAlumno">
-        NUEVA NOTA
+      <button type="button" class="btn-nuevo-flotante" data-bs-toggle="modal" data-bs-target="#modalNotaAlumno">
+        Nueva Nota
       </button>
 
       <!-- Modal crear tipo actiidad -->
@@ -16,7 +16,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5">INFORMACIÓN DE LA NOTA</h1>
+              <h1 class="modal-title fs-5 subTitulo-vista">Registro</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                 onclick="LimpiarModal()"></button>
             </div>
@@ -54,20 +54,54 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                 onclick="LimpiarModal()">Cancelar</button>
-              <button type="button" class="btn btn-primary" onclick="GuardarNota()">Guardar</button>
+              <button type="button" class="btn btn-editar" onclick="GuardarNota()">Guardar</button>
             </div>
           </div>
         </div>
       </div>
 
 
-      <table class="table">
+
+      <!-- Modal historial -->
+      <div class="modal fade" id="modalHistorialNotaAlumno" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5 subTitulo-vista">HISTORIAL DE CAMBIOS DE LA NOTA</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="text-center" scope="col">Fecha Edición</th>
+                    <th scope="col">Atributo</th>
+                    <th scope="col">Valor Anterior</th>
+                    <th scope="col">Valor Nuevo</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-historial-notas">
+
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <table class="table table-bordered table-sm">
         <thead>
           <tr>
-            <th scope="col">Fecha</th>
+            <th class="text-center" scope="col">Fecha</th>
             <th scope="col">Alumno</th>
-            <th scope="col">DNI</th>
-            <th scope="col">Nota</th>
+            <th class="ocultarElemento768" scope="col">DNI</th>
+            <th scope="col">Asignatura</th>
+            <th class="text-center" scope="col">Nota</th>
+            <th scope="col"></th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>

@@ -3,11 +3,11 @@
   <section>
     <article>
 
-      <h2>Docentes</h2>
+      <h2 class="titulo-vista">Docentes</h2>
 
       <!-- Button trigger modal -->
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalDocente">
-        NUEVO
+      <button type="button" class="btn-nuevo-flotante" data-bs-toggle="modal" data-bs-target="#modalDocente">
+        Nuevo Docente
       </button>
 
       <!-- Modal crear tipo actiidad -->
@@ -15,7 +15,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5">DATOS PERSONALES</h1>
+              <h1 class="modal-title fs-5 subTitulo-vista">Registro</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                 onclick="LimpiarModal()"></button>
             </div>
@@ -56,14 +56,14 @@
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                 onclick="LimpiarModal()">Cancelar</button>
-              <button type="button" class="btn btn-primary" onclick="Guardar()">Guardar</button>
+              <button type="button" class="btn btn-editar" onclick="Guardar()">Guardar</button>
             </div>
           </div>
         </div>
       </div>
 
 
-      <table class="table">
+      <table class="table table-bordered table-sm">
         <thead>
           <tr>
             <th scope="col">Docente</th>
