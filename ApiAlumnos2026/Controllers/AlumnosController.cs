@@ -87,10 +87,72 @@ namespace ApiAlumnos2026.Controllers
                 return Conflict(new { mensaje = "Ya existe un alumno con ese dni." });
             }
 
-            _context.Entry(alumno).State = EntityState.Modified;
-
             try
             {
+
+                var alumnoOriginal = _context.Alumnos.Where(n => n.AlumnoID == id).Single();
+
+                //PREGUNTAR QUE CAMBIA
+                if (alumnoOriginal.NombreCompleto != alumno.NombreCompleto)
+                {
+                    var editoAlumno = new HistorialAlumno
+                    {
+                        AlumnoID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "NOMBRE",
+                        ValorAnterior = alumnoOriginal.NombreCompleto,
+                        ValorNuevo = alumno.NombreCompleto,
+                    };
+                    _context.HistorialAlumnos.Add(editoAlumno);
+                }
+
+
+                if (alumnoOriginal.DNI != alumno.DNI)
+                {
+                    var editoAlumno = new HistorialAlumno
+                    {
+                        AlumnoID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "DNI",
+                        ValorAnterior = alumnoOriginal.DNI.ToString(),
+                        ValorNuevo = alumno.DNI.ToString(),
+                    };
+                    _context.HistorialAlumnos.Add(editoAlumno);
+                }
+
+
+                if (alumnoOriginal.Sexo != alumno.Sexo)
+                {
+                    var editoAlumno = new HistorialAlumno
+                    {
+                        AlumnoID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "SEXO",
+                        ValorAnterior = alumnoOriginal.Sexo.ToString(),
+                        ValorNuevo = alumno.Sexo.ToString(),
+                    };
+                    _context.HistorialAlumnos.Add(editoAlumno);
+                }
+
+
+                if (alumnoOriginal.Domicilio != alumno.Domicilio)
+                {
+                    var editoAlumno = new HistorialAlumno
+                    {
+                        AlumnoID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "DOMICILIO",
+                        ValorAnterior = alumnoOriginal.Domicilio,
+                        ValorNuevo = alumno.Domicilio,
+                    };
+                    _context.HistorialAlumnos.Add(editoAlumno);
+                }
+
+                alumnoOriginal.NombreCompleto = alumno.NombreCompleto;
+                alumnoOriginal.DNI = alumno.DNI;
+                alumnoOriginal.Sexo = alumno.Sexo;
+                alumnoOriginal.Domicilio = alumno.Domicilio;
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

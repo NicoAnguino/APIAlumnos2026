@@ -33,6 +33,11 @@ async function ObtenerAlumnos() {
             <td>${alumno.nombreCompleto}</td>
             <td>${alumno.dni} </td>
             <td>${alumno.domicilio} </td>
+               <td class="text-center columnaBtn">
+                <button class="btn btn-utilidad" onclick="AbrirModalHistorial(${alumno.alumnoID})">
+                 <i class="fa-solid fa-history"></i>
+                 Historial</button>
+            </td>
             <td class="text-center columnaBtn">
                 <button class="btn btn-editar" onclick="AbrirModalEditar(${alumno.alumnoID})">
                 <i class="fa-solid fa-pen"></i>
@@ -195,3 +200,49 @@ async function LimpiarModal() {
 }
 
 ObtenerAlumnos();
+
+async function AbrirModalHistorial(id) {
+
+  try {
+    const respuesta = await fetch(`${linkApi}/informes/HistorialAlumno/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (!respuesta.ok) {
+      throw new Error("No se pudo obtener el dato");
+    }
+
+    const historial = await respuesta.json();
+
+    const bodyNotasAlumnos = document.getElementById("tbody-historial-notas");
+    bodyNotasAlumnos.innerHTML = "";
+
+    historial.forEach((nota) => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+       <td class="text-center">${nota.fechaCambioString} Hs.</td>
+            <td>${nota.campoModificado}</td>
+            <td>${nota.valorAnterior} </td>
+              <td>${nota.valorNuevo} </td>
+        `;
+
+      bodyNotasAlumnos.appendChild(tr);
+    });
+
+
+    var modal = bootstrap.Modal.getOrCreateInstance(
+      document.getElementById('modalHistorialAlumno')
+    );
+
+    modal.show();
+
+  } catch (error) {
+    console.error("Error editar:", error);
+  }
+}

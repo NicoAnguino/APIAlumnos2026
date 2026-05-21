@@ -30,7 +30,7 @@ namespace ApiAlumnos2026.Controllers
             //BUSCAMOS TODOS LOS ALUMNOS DE LA BASE DE DATOS
             var alumnos = await _context.Alumnos.ToListAsync();
 
- if (filtro.AlumnoID > 0)
+                if (filtro.AlumnoID > 0)
                 {
                     //QUIERE DECIR QUE FILTRA POR ALGUNA ASIGNATURA EN PARTICULAR
                     alumnos = alumnos.Where(a => a.AlumnoID == filtro.AlumnoID).ToList();
@@ -83,10 +83,10 @@ namespace ApiAlumnos2026.Controllers
         [HttpPost("promedioasignaturas")]
         public async Task<ActionResult<IEnumerable<VistaPromedioAsignatura>>> PostPromedioAsignatura(FiltroNotaAlumno filtro)
         {
-            //INICIAMOS UN LISTADO VACIO DE TIPO VISTAPROMEDIOALUMNO PARA MOSTRAR EN PANTALLA
+            //INICIAMOS UN LISTADO VACIO DE TIPO VISTAPROMEDIOASIGNATURA PARA MOSTRAR EN PANTALLA
             List<VistaPromedioAsignatura> asignaturasMostrar = new List<VistaPromedioAsignatura>();
 
-            //BUSCAMOS TODOS LOS ALUMNOS DE LA BASE DE DATOS
+            //BUSCAMOS TODAS LAS ASIGNATURAS DE LA BASE DE DATOS
             var asignaturas = await _context.Asignaturas.ToListAsync();
 
             if (filtro.AsignaturaID > 0)
@@ -95,15 +95,15 @@ namespace ApiAlumnos2026.Controllers
                 asignaturas = asignaturas.Where(a => a.AsignaturaID == filtro.AsignaturaID).ToList();
             }
 
-            //POR CADA ALUMNO LO RECORREMOS PARA BUSCAR SUS NOTAS 
+            //POR CADA ASIGNATURA LO RECORREMOS PARA BUSCAR SUS NOTAS 
             foreach (var asignatura in asignaturas)
             {
-                //POR CADA ALUMNO BUSCO LAS NOTAS CORRESPONDIENTES
+                //POR CADA ASIGNATURA BUSCO LAS NOTAS CORRESPONDIENTES
                 var notasAsignatura = await _context.NotasAlumnos.Where(a => a.AsignaturaID == asignatura.AsignaturaID).ToListAsync();
 
                 if (filtro.AlumnoID > 0)
                 {
-                    //QUIERE DECIR QUE FILTRA POR ALGUNA ASIGNATURA EN PARTICULAR
+                    //QUIERE DECIR QUE FILTRA POR ALGUN ALUMNO EN PARTICULAR
                     notasAsignatura = notasAsignatura.Where(a => a.AlumnoID == filtro.AlumnoID).ToList();
                 }
 
@@ -121,16 +121,16 @@ namespace ApiAlumnos2026.Controllers
                     notasAsignatura = notasAsignatura.Where(t => t.Fecha >= fechaDesde && t.Fecha <= fechaHasta).ToList();
                 }
 
-                //PREGUNTAMOS SI ESE ALUMNO TIENE AL MENOS UNA NOTA PARA PODER MOSTRARLO
+                //PREGUNTAMOS SI ESA ASIGNATURA TIENE AL MENOS UNA NOTA PARA PODER MOSTRARLO
                 if (notasAsignatura.Count > 0)
                 {
-                    var alumnoMostrar = new VistaPromedioAsignatura
+                    var asignaturaMostrar = new VistaPromedioAsignatura
                     {
                         AsignaturaID = asignatura.AsignaturaID,
                         AsignaturaNombre = asignatura.Descripcion,
                         Promedio = decimal.Round(Convert.ToDecimal(notasAsignatura.Sum(n => n.Nota)) / notasAsignatura.Count(), 2)
                     };
-                    asignaturasMostrar.Add(alumnoMostrar);
+                    asignaturasMostrar.Add(asignaturaMostrar);
                 }
             }
 
@@ -169,6 +169,37 @@ namespace ApiAlumnos2026.Controllers
             }
 
             return asignaturasMostrar.ToList();
+        }
+
+
+        [HttpGet("HistorialAlumno/{id}")]
+        public async Task<ActionResult<IEnumerable<VistaHistorialAlumno>>> GetHistorialAlumno(int id)
+        {
+            //INICIAMOS UN LISTADO VACIO DE TIPO VISTAPROMEDIOALUMNO PARA MOSTRAR EN PANTALLA
+            List<VistaHistorialAlumno> datosMostrar = new List<VistaHistorialAlumno>();
+
+            //BUSCAMOS TODOS LOS ALUMNOS DE LA BASE DE DATOS
+            var historiales = await _context.HistorialAlumnos.Where(a => a.AlumnoID == id).ToListAsync();
+
+
+            historiales = historiales.OrderByDescending(a => a.FechaCambio).ToList();
+
+            //POR CADA ALUMNO LO RECORREMOS PARA BUSCAR SUS NOTAS 
+            foreach (var historial in historiales)
+            {
+
+                var alumnoMostrar = new VistaHistorialAlumno
+                {
+                    FechaCambioString = historial.FechaCambio.ToString("dd/MM/yyyy HH:mm"),
+                    CampoModificado = historial.CampoModificado,
+                    ValorAnterior = historial.ValorAnterior,
+                    ValorNuevo = historial.ValorNuevo
+                };
+                datosMostrar.Add(alumnoMostrar);
+
+            }
+
+            return datosMostrar.ToList();
         }
 
     }
