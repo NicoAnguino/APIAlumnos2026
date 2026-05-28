@@ -57,25 +57,6 @@ async function ObtenerAlumnos() {
   });
 }
 
-function validarCamposRequeridos(contenedor) { //funcion que valida que los campos requeridos no esten vacios, recive por parametro el form correspondiente y hace las verificaciones
-  let valido = true;
-
-  const inputs = contenedor.querySelectorAll(".input-requerido");
-
-  inputs.forEach(input => {
-    const error = input.nextElementSibling;
-
-    if (input.value.trim() === "") {
-      error.style.display = "block";
-      valido = false;
-    } else {
-      error.style.display = "none";
-    }
-  });
-
-  return valido;
-}
-
 async function AbrirModalEditar(id) {
 
   try {
@@ -115,12 +96,6 @@ async function AbrirModalEditar(id) {
 }
 
 async function Guardar() {
-
-  //const form = document.querySelector(".formAlumno");
-
-  // if (!validarCamposRequeridos(form)) {
-  //   return;
-  // }
 
   const alumnoID = document.getElementById("alumnoID").value;
   const nombreAlumno = document.getElementById("alumnoNombre").value.trim();
