@@ -3,11 +3,11 @@
 async function ObtenerAlumnos() {
 
 
-//  var modal = bootstrap.Modal.getOrCreateInstance(
-//       document.getElementById('modalAlumno')
-//     );
+  //  var modal = bootstrap.Modal.getOrCreateInstance(
+  //       document.getElementById('modalAlumno')
+  //     );
 
-//     modal.hide();
+  //     modal.hide();
 
   const respuesta = await fetch(`${linkApi}/Alumnos`, {
     method: "GET",
@@ -33,6 +33,7 @@ async function ObtenerAlumnos() {
             <td>${alumno.nombreCompleto}</td>
             <td>${alumno.dni} </td>
             <td>${alumno.domicilio} </td>
+              <td>${alumno.email} </td>
                <td class="text-center columnaBtn">
                 <button class="btn btn-utilidad" onclick="AbrirModalHistorial(${alumno.alumnoID})">
                  <i class="fa-solid fa-history"></i>
@@ -98,7 +99,9 @@ async function AbrirModalEditar(id) {
     document.getElementById("alumnoNombre").value = alumno.nombreCompleto;
     document.getElementById("dni").value = alumno.dni;
     document.getElementById("domicilio").value = alumno.domicilio;
-  document.getElementById("sexo").value = alumno.sexo;
+    document.getElementById("sexo").value = alumno.sexo;
+    document.getElementById("email").value = alumno.email;
+    document.getElementById("email").disabled = true;
 
     var modal = bootstrap.Modal.getOrCreateInstance(
       document.getElementById('modalAlumno')
@@ -124,18 +127,28 @@ async function Guardar() {
   const dni = document.getElementById("dni").value;
   const domicilio = document.getElementById("domicilio").value.trim();
   const sexo = parseInt(document.getElementById("sexo").value);
+  const email = document.getElementById("email").value.trim();
 
   const alumno = {
     alumnoID: alumnoID,
     nombreCompleto: nombreAlumno,
     dNI: dni,
     domicilio: domicilio,
-    sexo: sexo
+    sexo: sexo,
+    email: email
   };
 
-  console.log(alumno);
+  document.getElementById("errorNombre").textContent = "";
+  document.getElementById("errorEmail").textContent = "";
+  //console.log(alumno);
+  if (nombreAlumno == "") {
+    document.getElementById("errorNombre").textContent = "Ingrese un nombre";
+  }
+  if (email == "") {
+    document.getElementById("errorEmail").textContent = "Ingrese un email";
+  }
 
-  if (nombreAlumno != "") {
+  if (nombreAlumno != "" && email != "") {
     if (alumnoID > 0) {
       const respuesta = await fetch(`${linkApi}/Alumnos/${alumnoID}`, {
         method: "PUT",
@@ -153,15 +166,27 @@ async function Guardar() {
         },
         body: JSON.stringify(alumno)
       });
+
+
+      const data = await respuesta.json();
+
+if (!respuesta.ok) {
+    //console.log(data.mensaje);
+    document.getElementById("errorNombre").textContent = data.mensaje;
+    //alert(data.mensaje);
+    return;
+}
+
+console.log(data);
     }
 
-if(alumnoID > 0){
- var modal = bootstrap.Modal.getOrCreateInstance(
-     document.getElementById('modalAlumno')
-     );
+    //if(alumnoID > 0){
+    var modal = bootstrap.Modal.getOrCreateInstance(
+      document.getElementById('modalAlumno')
+    );
 
     modal.hide();
-}
+    //}
 
     ObtenerAlumnos();
   }
@@ -197,6 +222,10 @@ async function LimpiarModal() {
   document.getElementById("alumnoNombre").value = "";
   document.getElementById("dni").value = "";
   document.getElementById("domicilio").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("email").disabled = false;
+  document.getElementById("errorNombre").textContent = "";
+  document.getElementById("errorEmail").textContent = "";
 }
 
 ObtenerAlumnos();
@@ -219,7 +248,7 @@ async function AbrirModalHistorial(id) {
 
     const historial = await respuesta.json();
 
-    const bodyNotasAlumnos = document.getElementById("tbody-historial-notas");
+    const bodyNotasAlumnos = document.getElementById("tbody-historial-alumnos");
     bodyNotasAlumnos.innerHTML = "";
 
     historial.forEach((nota) => {

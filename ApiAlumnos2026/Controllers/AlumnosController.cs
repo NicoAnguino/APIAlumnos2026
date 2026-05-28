@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiAlumnos2026.Models;
 using ApiAlumnos2026.ModelsView;
+using Microsoft.AspNetCore.Identity;
 
 namespace ApiAlumnos2026.Controllers
 {
@@ -15,9 +16,11 @@ namespace ApiAlumnos2026.Controllers
     public class AlumnosController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AlumnosController(ApplicationDbContext context)
+        public AlumnosController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -36,7 +39,8 @@ namespace ApiAlumnos2026.Controllers
                     AlumnoID = alumno.AlumnoID,
                     NombreCompleto = alumno.NombreCompleto,
                     DNI = alumno.DNI,
-                    Domicilio = alumno.Domicilio
+                    Domicilio = alumno.Domicilio,
+                    Email = alumno.Email
                 };
                 vistaAlumnos.Add(mostraAlumno);
 
@@ -104,6 +108,12 @@ namespace ApiAlumnos2026.Controllers
                         ValorNuevo = alumno.NombreCompleto,
                     };
                     _context.HistorialAlumnos.Add(editoAlumno);
+
+                    var user = _context.Users.Where(n => n.Email == alumnoOriginal.Email).SingleOrDefault();
+                    if (user != null)
+                    {
+                        user.NombreCompleto = alumno.NombreCompleto;
+                    }
                 }
 
 
@@ -171,14 +181,17 @@ namespace ApiAlumnos2026.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Alumno>> PostAlumno(Alumno alumno)
+        public async Task<ActionResult> PostAlumno(Alumno alumno)
         {
 
             if (!string.IsNullOrEmpty(alumno.NombreCompleto))
             {
                 alumno.NombreCompleto = alumno.NombreCompleto?.ToUpper();
             }
-
+            if (!string.IsNullOrEmpty(alumno.Email))
+            {
+                alumno.Email = alumno.Email?.ToLower();
+            }
             if (!string.IsNullOrEmpty(alumno.Domicilio))
             {
                 alumno.Domicilio = alumno.Domicilio?.ToUpper();
@@ -191,9 +204,34 @@ namespace ApiAlumnos2026.Controllers
             }
 
             _context.Alumnos.Add(alumno);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAlumno", new { id = alumno.AlumnoID }, alumno);
+            var user = new ApplicationUser
+            {
+                UserName = alumno.Email,
+                Email = alumno.Email,
+                NombreCompleto = alumno.NombreCompleto
+            };
+
+            //HACEMOS USO DEL MÉTODO REGISTRAR USUARIO
+            var result = await _userManager.CreateAsync(user, "Ezpeleta_2026");
+
+            if (result.Succeeded)
+            {
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetAlumno", new { id = alumno.AlumnoID }, alumno);
+            }
+
+            var error = "";
+            foreach (var textoerror in result.Errors)
+            {
+                error += textoerror.Description;
+            }
+
+            return BadRequest(new
+            {
+                mensaje = error
+            });
         }
 
         // DELETE: api/Alumnos/5 esta seccion del aplicativo no se usa el delete

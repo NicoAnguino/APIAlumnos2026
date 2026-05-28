@@ -1,0 +1,39 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace ApiAlumnos2026.Migrations
+{
+    /// <inheritdoc />
+    public partial class AgregarHistorialDocentes : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "HistorialDocentes",
+                columns: table => new
+                {
+                    HistorialDocenteID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DocenteID = table.Column<int>(type: "int", nullable: false),
+                    FechaCambio = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CampoModificado = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ValorAnterior = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ValorNuevo = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HistorialDocentes", x => x.HistorialDocenteID);
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "HistorialDocentes");
+        }
+    }
+}

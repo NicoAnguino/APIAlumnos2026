@@ -66,10 +66,56 @@ namespace ApiAlumnos2026.Controllers
                 return Conflict(new { mensaje = "Ya existe un docente con ese dni." });
             }
 
-            _context.Entry(docente).State = EntityState.Modified;
-
             try
             {
+                var docenteOriginal = _context.Docentes.Where(n => n.DocenteID == id).Single();
+
+                //PREGUNTAR QUE CAMBIA
+                if (docenteOriginal.NombreCompleto != docente.NombreCompleto)
+                {
+                    var editoDocente = new HistorialDocente
+                    {
+                        DocenteID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "NOMBRE",
+                        ValorAnterior = docenteOriginal.NombreCompleto,
+                        ValorNuevo = docente.NombreCompleto,
+                    };
+                    _context.HistorialDocentes.Add(editoDocente);
+                }
+
+
+                if (docenteOriginal.DNI != docente.DNI)
+                {
+                    var editoDocente = new HistorialDocente
+                    {
+                        DocenteID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "DNI",
+                        ValorAnterior = docenteOriginal.DNI.ToString(),
+                        ValorNuevo = docente.DNI.ToString(),
+                    };
+                    _context.HistorialDocentes.Add(editoDocente);
+                }
+
+
+                if (docenteOriginal.Sexo != docente.Sexo)
+                {
+                    var editoDocente = new HistorialDocente
+                    {
+                        DocenteID = id,
+                        FechaCambio = DateTime.Now,
+                        CampoModificado = "SEXO",
+                        ValorAnterior = docenteOriginal.Sexo.ToString(),
+                        ValorNuevo = docente.Sexo.ToString(),
+                    };
+                    _context.HistorialDocentes.Add(editoDocente);
+                }
+
+                docenteOriginal.NombreCompleto = docente.NombreCompleto;
+                docenteOriginal.DNI = docente.DNI;
+                docenteOriginal.Sexo = docente.Sexo;
+
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
@@ -94,6 +140,10 @@ namespace ApiAlumnos2026.Controllers
             if (!string.IsNullOrEmpty(docente.NombreCompleto))
             {
                 docente.NombreCompleto = docente.NombreCompleto?.ToUpper();
+            }
+            if (!string.IsNullOrEmpty(docente.Email))
+            {
+                docente.Email = docente.Email?.ToLower();
             }
             var docenteExiste = await _context.Docentes.Where(t => t.DNI == docente.DNI).FirstOrDefaultAsync();
 

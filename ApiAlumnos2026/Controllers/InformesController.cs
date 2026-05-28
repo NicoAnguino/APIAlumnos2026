@@ -202,5 +202,35 @@ namespace ApiAlumnos2026.Controllers
             return datosMostrar.ToList();
         }
 
+         [HttpGet("HistorialDocente/{id}")]
+        public async Task<ActionResult<IEnumerable<VistaHistorialDocente>>> GetHistorialDocente(int id)
+        {
+            //INICIAMOS UN LISTADO VACIO PARA MOSTRAR EN PANTALLA
+            List<VistaHistorialDocente> datosMostrar = new List<VistaHistorialDocente>();
+
+            //BUSCAMOS TODOS LOS ALUMNOS DE LA BASE DE DATOS
+            var historiales = await _context.HistorialDocentes.Where(a => a.DocenteID == id).ToListAsync();
+
+
+            historiales = historiales.OrderByDescending(a => a.FechaCambio).ToList();
+
+            //POR CADA Docente LO RECORREMOS PARA BUSCAR SUS NOTAS 
+            foreach (var historial in historiales)
+            {
+
+                var docenteMostrar = new VistaHistorialDocente
+                {
+                    FechaCambioString = historial.FechaCambio.ToString("dd/MM/yyyy HH:mm"),
+                    CampoModificado = historial.CampoModificado,
+                    ValorAnterior = historial.ValorAnterior,
+                    ValorNuevo = historial.ValorNuevo
+                };
+                datosMostrar.Add(docenteMostrar);
+
+            }
+
+            return datosMostrar.ToList();
+        }
+
     }
 }

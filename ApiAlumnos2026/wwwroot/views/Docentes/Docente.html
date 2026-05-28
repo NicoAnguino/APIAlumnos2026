@@ -27,7 +27,7 @@
                   <label for="docenteNombre" class="form-label">Nombre Completo</label>
                   <input type="text" class="form-control input-requerido" id="docenteNombre"
                     placeholder="Ingrese el nombre completo" style="text-transform: uppercase" />
-                  <!-- <span class="error-texto" id="errorNombre">Campo obligatorio</span> -->
+                  <span class="error-texto  text-danger" id="errorNombre"></span>
                 </div>
 
                 <div class="mb-3">
@@ -38,18 +38,19 @@
 
                 <div class="mb-3">
                   <label for="sexo" class="form-label">Sexo</label>
-                 <select id="sexo" class="form-control">
+                  <select id="sexo" class="form-control">
                     <option value="1">Masculino</option>
                     <option value="2">Femenino</option>
                     <option value="3">Otro</option>
-                 </select>
+                  </select>
                 </div>
 
-                 <!-- <div class="mb-3">
-                  <label for="domicilio" class="form-label">Domicilio</label>
-                  <input type="text" class="form-control input-requerido" id="domicilio"
-                    placeholder="Ingrese el domicilio" style="text-transform: uppercase" />
-                </div> -->
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input type="email" class="form-control input-requerido" id="email" placeholder="Ingrese un Email"
+                    style="text-transform: lowercase" />
+                        <span class="error-texto text-danger" id="errorEmail"></span>
+                </div>
 
               </form>
             </div>
@@ -63,11 +64,44 @@
       </div>
 
 
+      <!-- Modal historial -->
+      <div class="modal fade" id="modalHistorialDocente" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5 subTitulo-vista">HISTORIAL DE CAMBIOS DEL DOCENTE</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th class="text-center" scope="col">Fecha Edición</th>
+                    <th scope="col">Atributo</th>
+                    <th scope="col">Valor Anterior</th>
+                    <th scope="col">Valor Nuevo</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-historial-docentes">
+
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
       <table class="table table-bordered table-sm">
         <thead>
           <tr>
             <th scope="col">Docente</th>
             <th scope="col">DNI</th>
+            <th scope="col">Email</th>
+            <th scope="col"></th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
@@ -78,7 +112,7 @@
       </table>
 
 
-   
+
       <script src="../js/docente.js"></script>
     </article>
   </section>

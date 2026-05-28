@@ -3,11 +3,11 @@
 async function ObtenerDocentes() {
 
 
- var modal = bootstrap.Modal.getOrCreateInstance(
-      document.getElementById('modalDocente')
-    );
+  var modal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById('modalDocente')
+  );
 
-    modal.hide();
+  modal.hide();
 
   const respuesta = await fetch(`${linkApi}/Docentes`, {
     method: "GET",
@@ -32,6 +32,12 @@ async function ObtenerDocentes() {
     tr.innerHTML = `
             <td>${docente.nombreCompleto}</td>
             <td>${docente.dni} </td>
+             <td>${docente.email} </td>
+                  <td class="text-center columnaBtn">
+                <button class="btn btn-utilidad" onclick="AbrirModalHistorial(${docente.docenteID})">
+                 <i class="fa-solid fa-history"></i>
+                 Historial</button>
+            </td>
             <td class="text-center columnaBtn">
                 <button class="btn btn-editar" onclick="AbrirModalEditar(${docente.docenteID})">
                   <i class="fa-solid fa-pen"></i>
@@ -90,7 +96,9 @@ async function AbrirModalEditar(id) {
     document.getElementById("docenteID").value = docente.docenteID;
     document.getElementById("docenteNombre").value = docente.nombreCompleto;
     document.getElementById("dni").value = docente.dni;
-  document.getElementById("sexo").value = docente.sexo;
+    document.getElementById("sexo").value = docente.sexo;
+    document.getElementById("email").value = docente.email;
+    document.getElementById("email").disabled = true;
 
     var modal = bootstrap.Modal.getOrCreateInstance(
       document.getElementById('modalDocente')
@@ -109,17 +117,27 @@ async function Guardar() {
   const nombreDocente = document.getElementById("docenteNombre").value.trim();
   const dni = document.getElementById("dni").value;
   const sexo = parseInt(document.getElementById("sexo").value);
+  const email = document.getElementById("email").value.trim();
 
   const docente = {
     docenteID: docenteID,
     nombreCompleto: nombreDocente,
     dNI: dni,
-    sexo: sexo
+    sexo: sexo,
+    email: email
   };
+  document.getElementById("errorNombre").textContent = "";
+  document.getElementById("errorEmail").textContent = "";
+  //console.log(docente);
+  if (nombreDocente == "") {
+    document.getElementById("errorNombre").textContent = "Ingrese un nombre";
+  }
+  if (email == "") {
+    document.getElementById("errorEmail").textContent = "Ingrese un email";
+  }
 
-  console.log(docente);
 
-  if (nombreDocente != "") {
+  if (nombreDocente != "" && email != "") {
     if (docenteID > 0) {
       const respuesta = await fetch(`${linkApi}/Docentes/${docenteID}`, {
         method: "PUT",
@@ -172,6 +190,56 @@ async function LimpiarModal() {
   document.getElementById("docenteID").value = 0;
   document.getElementById("docenteNombre").value = "";
   document.getElementById("dni").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("email").disabled = false;
+  document.getElementById("errorNombre").textContent = "";
+  document.getElementById("errorEmail").textContent = "";
 }
 
 ObtenerDocentes();
+
+async function AbrirModalHistorial(id) {
+
+  try {
+    const respuesta = await fetch(`${linkApi}/informes/HistorialDocente/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (!respuesta.ok) {
+      throw new Error("No se pudo obtener el dato");
+    }
+
+    const historial = await respuesta.json();
+
+    const bodyNotasDocentes = document.getElementById("tbody-historial-docentes");
+    bodyNotasDocentes.innerHTML = "";
+
+    historial.forEach((nota) => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+       <td class="text-center">${nota.fechaCambioString} Hs.</td>
+            <td>${nota.campoModificado}</td>
+            <td>${nota.valorAnterior} </td>
+              <td>${nota.valorNuevo} </td>
+        `;
+
+      bodyNotasDocentes.appendChild(tr);
+    });
+
+
+    var modal = bootstrap.Modal.getOrCreateInstance(
+      document.getElementById('modalHistorialDocente')
+    );
+
+    modal.show();
+
+  } catch (error) {
+    console.error("Error editar:", error);
+  }
+}
