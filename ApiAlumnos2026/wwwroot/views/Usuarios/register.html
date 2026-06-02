@@ -20,7 +20,6 @@
     <link href="../../css/login.css" rel="stylesheet">
 
 </head>
-
 <body>
 
     <div class="login-container">
@@ -28,29 +27,40 @@
         <div class="login-card">
 
             <div class="login-header">
-                <h1>API ALUMNOS</h1>
-                <p>Sistema de Gestión de Alumnos</p>
+                <h1>Crear Cuenta</h1>
+                <p>Comience a gestionar sus notas</p>
             </div>
 
-            <form id="loginForm">
+            <form id="registerForm">
+
+                <div class="input-group">
+                    <label>Nombre Completo</label>
+                    <input type="text" id="nombre" placeholder="Juan Pérez">
+                </div>
 
                 <div class="input-group">
                     <label>Correo Electrónico</label>
-                    <input type="email" id="loginEmail" placeholder="nombre@empresa.com">
+                    <input type="email" id="email" placeholder="nombre@empresa.com">
                 </div>
 
                 <div class="input-group">
                     <label>Contraseña</label>
-                    <input type="password" id="loginPassword" placeholder="Ingrese su contraseña">
+                    <input type="password" id="password" placeholder="Ingrese una contraseña">
                 </div>
 
-                <button type="submit">Iniciar Sesión</button>
+                <div class="input-group">
+                    <label>Confirmar Contraseña</label>
+                    <input type="password" id="confirmPassword" placeholder="Repita la contraseña">
+                </div>
+
+                <button type="submit">
+                    Registrarme
+                </button>
 
             </form>
 
             <div class="links">
-                <a href="../../views/Usuarios/register.html">Registrarme</a>
-                <!-- <a href="#" onclick="Migrar()">Migrar</a> -->
+                <a href="login.html">Ya tengo una cuenta</a>
             </div>
 
         </div>
@@ -59,7 +69,7 @@
 
 
        <script src="../../js/config.js"></script>
- <script src="../../js/user.js"></script>
+ <script src="../../js/register.js"></script>
 
 </body>
 
