@@ -7,9 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiAlumnos2026.Models;
 using ApiAlumnos2026.ModelsView;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ApiAlumnos2026.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AsignaturasController : ControllerBase
@@ -25,6 +28,8 @@ namespace ApiAlumnos2026.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VistaAsignatura>>> GetAsignaturas()
         {
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
             List<VistaAsignatura> vistaAsignaturas = new List<VistaAsignatura>();
 
             var asignaturas = await _context.Asignaturas.Where(a => a .Eliminado == false).OrderBy(n => n.Descripcion).ToListAsync();

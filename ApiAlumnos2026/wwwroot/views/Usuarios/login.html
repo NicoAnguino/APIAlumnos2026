@@ -1,116 +1,66 @@
-<div class="container mt-3">
+<!DOCTYPE html>
+<html lang="en">
 
-  <section>
-    <article>
+<head>
 
-      <h2 class="titulo-vista">Registrar Usuario</h2>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-      
-        <form id="registerForm">
-        <input type="text" id="regNombre" placeholder="Nombre completo" required><br>
-        <input type="email" id="regEmail" placeholder="Email" required><br>
-        <input type="password" id="regPassword" placeholder="Contraseña" required><br>
-        <button type="submit">Registrar</button>
-    </form>
+    <title>Ingreso</title>
 
-    <h2>Login</h2>
-    <form id="loginForm">
-        <input type="email" id="loginEmail" placeholder="Email" required><br>
-        <input type="password" id="loginPassword" placeholder="Contraseña" required><br>
-        <button type="submit">Iniciar Sesión</button>
-    </form>
+    <!-- Custom fonts for this template-->
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
 
-    <h3>Token JWT (A MODO DE PRUEBA)</h3>
-    <pre id="tokenOutput"></pre>
+    <!-- Custom styles for this template-->
+    <link href="../../css/login.css" rel="stylesheet">
 
-    <button onclick="cerrarSesion()">Cerrar sesión</button>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <div class="login-card">
+
+            <div class="login-header">
+                <h1>API ALUMNOS</h1>
+                <p>Sistema de Gestión de Alumnos</p>
+            </div>
+
+            <form id="loginForm">
+
+                <div class="input-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="loginEmail" placeholder="nombre@empresa.com">
+                </div>
+
+                <div class="input-group">
+                    <label>Contraseña</label>
+                    <input type="password" id="loginPassword" placeholder="Ingrese su contraseña">
+                </div>
+
+                <button type="submit">Iniciar Sesión</button>
+
+            </form>
+
+            <!-- <div class="links">
+                <a href="../views/register.html">Registrarme</a>
+                <a href="#" onclick="Migrar()">Migrar</a>
+            </div> -->
+
+        </div>
+
+    </div>
 
 
-   
-     
-     <script>
-        const linkApi = "http://localhost:5128/api"; //MEDIO DE CONEXION A LA API
+       <script src="../../js/config.js"></script>
+ <script src="../../js/user.js"></script>
 
-        document.getElementById("registerForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const data = {
-                nombreCompleto: document.getElementById("regNombre").value,
-                email: document.getElementById("regEmail").value,
-                password: document.getElementById("regPassword").value
-            };
+</body>
 
-            const response = await fetch(`${linkApi}/auth/register`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            });
-
-            const result = await response.text();
-            alert(result);
-        });
-
-        document.getElementById("loginForm").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            const data = {
-                email: document.getElementById("loginEmail").value,
-                password: document.getElementById("loginPassword").value
-            };
-
-            const response = await fetch(`${linkApi}/auth/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            });
-
-            if (response.ok) {
-                const result = await response.json();
-                document.getElementById("tokenOutput").textContent = result.token;
-                localStorage.setItem("token", result.token);
-            } else {
-                alert("Login fallido");
-            }
-        });
-
-        //FUNCION DE LEER TOKEN DEL DISPOSITIVO
-        const getToken = () => localStorage.getItem("token");
-
-        async function cerrarSesion() {
-            const token = getToken();
-            const email = localStorage.getItem("email"); // suponiendo que guardaste el email al hacer login
-
-            if (!token || !email) {
-                localStorage.removeItem("token");
-                localStorage.removeItem("email");
-                window.location.href = "login.html";
-                return;
-            }
-
-            try {
-                const res = await fetch(`${linkApi}/auth/logout`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ email })
-                });
-
-                if (res.ok) {
-                    alert("Sesión cerrada correctamente");
-                } else {
-                    alert("Error al cerrar sesión: " + await res.text());
-                }
-            } catch (error) {
-                console.error("Error en logout:", error);
-            }
-
-            // Limpiar token y redirigir
-            localStorage.removeItem("token");
-            localStorage.removeItem("email");
-            window.location.href = "login.html";
-        }
-    </script>
-    </article>
-  </section>
-
-</div>
+</html>

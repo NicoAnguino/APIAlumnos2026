@@ -1,5 +1,3 @@
-let linkApi = 'http://localhost:5128/Api';
-
 function cargarComponente(id, path) {
   return fetch(path)
     .then(res => res.text())
@@ -33,7 +31,7 @@ function cargarVista(view) {
 }
 
 function cargarVistaPorHash() {
-  const vista = window.location.hash.replace('#', '') || 'Alumnos/Alumno';
+  const vista = window.location.hash.replace('#', '') || 'Asignaturas/Asignatura';
   cargarVista(vista);
   actualizarLinkActivo(); // 👈 Asegurate de actualizar los estilos del menú
 }
@@ -103,5 +101,5 @@ window.addEventListener('DOMContentLoaded', () => {
 
   cargarComponente('footer', '../views/components/footer.html');
   cargarVistaPorHash();
-  //verificarUsuario(); //Se ejecuta después de cargar el menú
+  setTimeout("verificarUsuario();", 200);//Se ejecuta después de cargar el menú 
 });
