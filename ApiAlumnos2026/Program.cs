@@ -11,9 +11,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
     // Configuración Identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
+// builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+//     .AddEntityFrameworkStores<ApplicationDbContext>()
+//     .AddDefaultTokenProviders();
+
+    builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 0;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 
     // Configuración JWT
 var jwtKey = builder.Configuration["Jwt:Key"];
@@ -37,6 +49,8 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
     };
 });
+
+
 
 builder.Services.AddAuthorization();
 
