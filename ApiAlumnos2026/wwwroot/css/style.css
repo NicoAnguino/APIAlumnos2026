@@ -24,7 +24,8 @@ body {
   width: 270px;
   background: #151A2D;
   height: calc(100vh);
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
+  z-index: 1000;
 }
 
 .sidebar.collapsed {
@@ -470,6 +471,9 @@ table tbody tr:nth-child(even){
     background:#fafcff;
 }
 
+.columnaBtn{
+  width: 20px;
+}
 
 @media (max-width: 768px) {
 

@@ -33,23 +33,22 @@ async function ObtenerAlumnos() {
             <td>${alumno.nombreCompleto}</td>
             <td>${alumno.dni} </td>
             <td>${alumno.domicilio} </td>
-              <td>${alumno.email} </td>
-               <td class="text-center columnaBtn">
-                <button class="btn btn-utilidad" onclick="AbrirModalHistorial(${alumno.alumnoID})">
+              <td class='ocultarElemento550'>${alumno.email} </td>
+               <td class="text-center">
+                <button class="btn btn-utilidad" title='Historial de Cambios' onclick="AbrirModalHistorial(${alumno.alumnoID})">
                  <i class="fa-solid fa-history"></i>
-                 Historial</button>
+                 </button>
             </td>
-            <td class="text-center columnaBtn">
-                <button class="btn btn-editar" onclick="AbrirModalEditar(${alumno.alumnoID})">
-                <i class="fa-solid fa-pen"></i>
-                Editar
+            <td class="text-center">
+                <button class="btn btn-editar" title='Editar' onclick="AbrirModalEditar(${alumno.alumnoID})">
+                <i class="fa-solid fa-pen"></i>               
                 </button>
 
             </td>
-            <td class="text-center columnaBtn">
-                <button class="btn btn-eliminar" onclick="Eliminar(${alumno.alumnoID})">
+            <td class="text-center">
+                <button class="btn btn-eliminar" title='Eliminar' onclick="Eliminar(${alumno.alumnoID})">
                  <i class="fa-solid fa-trash"></i>
-                 Eliminar</button>
+                 </button>
             </td>
         `;
 
@@ -95,6 +94,11 @@ async function AbrirModalEditar(id) {
   }
 }
 
+function validarEmail(email) {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(email);
+}
+
 async function Guardar() {
 
   const alumnoID = document.getElementById("alumnoID").value;
@@ -103,7 +107,7 @@ async function Guardar() {
   const domicilio = document.getElementById("domicilio").value.trim();
   const sexo = parseInt(document.getElementById("sexo").value);
   const email = document.getElementById("email").value.trim();
-
+  let registrar = true;
   const alumno = {
     alumnoID: alumnoID,
     nombreCompleto: nombreAlumno,
@@ -115,15 +119,24 @@ async function Guardar() {
 
   document.getElementById("errorNombre").textContent = "";
   document.getElementById("errorEmail").textContent = "";
-  //console.log(alumno);
+
   if (nombreAlumno == "") {
     document.getElementById("errorNombre").textContent = "Ingrese un nombre";
-  }
-  if (email == "") {
-    document.getElementById("errorEmail").textContent = "Ingrese un email";
+    registrar = false;
   }
 
-  if (nombreAlumno != "" && email != "") {
+  if (email == "") {
+    document.getElementById("errorEmail").textContent = "Ingrese un email";
+    registrar = false;
+  }
+  else {
+    if (!validarEmail(email)) {
+      document.getElementById("errorEmail").textContent = "Formato incorrecto de email";
+      registrar = false;
+    }
+  }
+
+  if (registrar) {
     if (alumnoID > 0) {
       const respuesta = await fetch(`${linkApi}/Alumnos/${alumnoID}`, {
         method: "PUT",
@@ -145,14 +158,14 @@ async function Guardar() {
 
       const data = await respuesta.json();
 
-if (!respuesta.ok) {
-    //console.log(data.mensaje);
-    document.getElementById("errorNombre").textContent = data.mensaje;
-    //alert(data.mensaje);
-    return;
-}
+      if (!respuesta.ok) {
+        //console.log(data.mensaje);
+        document.getElementById("errorNombre").textContent = data.mensaje;
+        //alert(data.mensaje);
+        return;
+      }
 
-console.log(data);
+      console.log(data);
     }
 
     //if(alumnoID > 0){
