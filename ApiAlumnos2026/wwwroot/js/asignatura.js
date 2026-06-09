@@ -37,14 +37,13 @@ async function ObtenerAsignaturas() {
             <td>${asignatura.descripcion}</td>
             <td class="text-center columnaBtn">
  <button class="btn btn-editar" onclick="AbrirModalEditar(${asignatura.asignaturaID})">
-        <i class="fa-solid fa-pen"></i>
-        Editar
+        <i class="fa-solid fa-pen"></i>       
     </button>
             </td>
             <td class="text-center columnaBtn">
                 <button class="btn btn-eliminar" onclick="Eliminar(${asignatura.asignaturaID})">
                  <i class="fa-solid fa-trash"></i>
-                 Eliminar</button>
+                 </button>
             </td>
         `;
 

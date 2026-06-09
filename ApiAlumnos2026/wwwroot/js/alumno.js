@@ -9,12 +9,14 @@ async function ObtenerAlumnos() {
 
   //     modal.hide();
 
-  const respuesta = await fetch(`${linkApi}/Alumnos`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+    const respuesta = await authFetch("/Alumnos");
+
+  // const respuesta = await fetch(`${linkApi}/Alumnos`, {
+  //   method: "GET",
+  //   headers: {
+  //     "Content-Type": "application/json"
+  //   }
+  // });
 
   const alumnos = await respuesta.json();
   //console.log(alumnos);
@@ -59,14 +61,16 @@ async function ObtenerAlumnos() {
 async function AbrirModalEditar(id) {
 
   try {
-    const respuesta = await fetch(`${linkApi}/Alumnos/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    // const respuesta = await fetch(`${linkApi}/Alumnos/${id}`,
+    //   {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   }
+    // );
+
+    const respuesta = await authFetch("/Alumnos/" + id);
 
     if (!respuesta.ok) {
       throw new Error("No se pudo obtener el dato");
@@ -138,23 +142,32 @@ async function Guardar() {
 
   if (registrar) {
     if (alumnoID > 0) {
-      const respuesta = await fetch(`${linkApi}/Alumnos/${alumnoID}`, {
+      // const respuesta = await fetch(`${linkApi}/Alumnos/${alumnoID}`, {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify(alumno)
+      // });
+
+        const res = await authFetch(`/Alumnos/${alumnoID}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
         body: JSON.stringify(alumno)
-      });
+    });
     }
     else {
-      const respuesta = await fetch(`${linkApi}/Alumnos`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(alumno)
-      });
+      // const respuesta = await fetch(`${linkApi}/Alumnos`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify(alumno)
+      // });
 
+       const respuesta = await authFetch(`/Alumnos`, {
+        method: "POST",
+        body: JSON.stringify(alumno)
+    });
 
       const data = await respuesta.json();
 
@@ -185,14 +198,18 @@ async function Guardar() {
 async function Eliminar(id) {
 
   try {
-    const respuesta = await fetch(`${linkApi}/Alumnos/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    // const respuesta = await fetch(`${linkApi}/Alumnos/${id}`,
+    //   {
+    //     method: "DELETE",
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   }
+    // );
+
+      const respuesta = await authFetch(`/Alumnos/${id}`, {
+        method: "DELETE"
+    });
 
     if (!respuesta.ok) {
       throw new Error("No se pudo obtener el dato");

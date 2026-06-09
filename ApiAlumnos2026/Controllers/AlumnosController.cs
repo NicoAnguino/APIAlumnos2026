@@ -8,9 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using ApiAlumnos2026.Models;
 using ApiAlumnos2026.ModelsView;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiAlumnos2026.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AlumnosController : ControllerBase
