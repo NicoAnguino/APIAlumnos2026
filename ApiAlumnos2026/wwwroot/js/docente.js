@@ -33,21 +33,26 @@ async function ObtenerDocentes() {
             <td>${docente.nombreCompleto}</td>
             <td>${docente.dni} </td>
              <td>${docente.email} </td>
+               <td class="text-center columnaBtn">
+                <button class="btn btn-utilidad" title='Asignaturas' onclick="AbrirModalAsignaturasDocente(${docente.docenteID})">
+                 <i class="fa-solid fa-list"></i>
+                 </button>
+            </td>
                   <td class="text-center columnaBtn">
-                <button class="btn btn-utilidad" onclick="AbrirModalHistorial(${docente.docenteID})">
+                <button class="btn btn-utilidad" title='Historial' onclick="AbrirModalHistorial(${docente.docenteID})">
                  <i class="fa-solid fa-history"></i>
-                 Historial</button>
+                 </button>
             </td>
             <td class="text-center columnaBtn">
-                <button class="btn btn-editar" onclick="AbrirModalEditar(${docente.docenteID})">
+                <button class="btn btn-editar" title='Editar' onclick="AbrirModalEditar(${docente.docenteID})">
                   <i class="fa-solid fa-pen"></i>
-                  Editar</button>
+                  </button>
 
             </td>
             <td class="text-center columnaBtn">
-                <button class="btn btn-eliminar" onclick="Eliminar(${docente.docenteID})">
+                <button class="btn btn-eliminar" title='Eliminar' onclick="Eliminar(${docente.docenteID})">
                    <i class="fa-solid fa-trash"></i>
-                   Eliminar</button>
+                   </button>
             </td>
         `;
 
@@ -241,5 +246,149 @@ async function AbrirModalHistorial(id) {
 
   } catch (error) {
     console.error("Error editar:", error);
+  }
+}
+
+
+//REUTILIZAMOS LA FUNCION OBTENER ASIGNATURAS PARA COMPLETAR EL SELECT
+async function ObtenerAsignaturas() {
+
+  const respuesta = await authFetch("/asignaturas");
+
+  const asignaturas = await respuesta.json();
+
+  const comboSelect = document.querySelector("#selectAsignaturas");
+  comboSelect.innerHTML = "";
+
+
+  let opciones = '';
+  asignaturas.forEach((asignatura) => {
+    opciones += `<option value="${asignatura.asignaturaID}">${asignatura.descripcion}</option>`;
+  });
+  comboSelect.innerHTML = opciones;
+
+
+}
+
+//DECLARAMOS LA FUNCION QUE SE ENCARGA DE MOSTRAR LAS ASIGNATURAS DE ESE DOCENTE
+async function BuscarAsignaturasDocente(id) {
+
+  try {
+    const respuesta = await fetch(`${linkApi}/docentes/ListadoAsignaturasDocente/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (!respuesta.ok) {
+      throw new Error("No se pudo obtener el dato");
+    }
+
+    const asignaturasDocente = await respuesta.json();
+
+    const bodyNotasDocentes = document.getElementById("tbody-asignaturas-docentes");
+    bodyNotasDocentes.innerHTML = "";
+
+    if (asignaturasDocente.length > 0) {
+      asignaturasDocente.forEach((asignatura) => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${asignatura.descripcion}</td>
+             <td class="text-center columnaBtn">
+                <button class="btn btn-eliminar" onclick="EliminarAsignaturaDocente(${asignatura.asignaturaDocenteID})">
+                   <i class="fa-solid fa-trash"></i>
+                   </button>
+            </td>
+        `;
+
+        bodyNotasDocentes.appendChild(tr);
+      });
+    }
+    else {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
+            <td class='text-danger' colspan='2'>ACTUALMENTE EL DOCENTE NO POSEE ASIGNATURAS</td>  
+        `;
+      bodyNotasDocentes.appendChild(tr);
+
+    }
+
+
+  } catch (error) {
+    console.error("Error editar:", error);
+  }
+}
+
+//ESTA FUNCION SE ENCARGA DE ABRIR EL MODAL DE ASIGNATURAS DE DOCENTE LLAMANDO TAMBIEN A LAS FUNCIONES CORRESPONDIENTES
+async function AbrirModalAsignaturasDocente(id) {
+
+  document.getElementById("docenteIDAsignatura").value = id;
+  ObtenerAsignaturas();
+  BuscarAsignaturasDocente(id);
+
+  var modal = bootstrap.Modal.getOrCreateInstance(
+    document.getElementById('modalAsignaturasDocente')
+  );
+
+  modal.show();
+}
+
+
+//GUARDAR ASIGNATURA DOCENTE Y VOLVER A LLAMAR AL METODO DE CARGAR ASIGNATURAS DEL DOCENTE
+async function GuardarAsignaturaDocente() {
+
+  const docenteID = document.getElementById("docenteIDAsignatura").value;
+  const asignaturaID = document.getElementById("selectAsignaturas").value;
+
+  const docente = {
+    asignaturaDocenteID: 0,
+    docenteID: docenteID,
+    asignaturaID: asignaturaID
+  };
+
+  if (docenteID > 0 && asignaturaID > 0) {
+
+    const respuesta = await fetch(`${linkApi}/Docentes/GuardarAsignaturaDocente`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(docente)
+    });
+
+
+    BuscarAsignaturasDocente(docenteID);
+  }
+
+}
+
+
+async function EliminarAsignaturaDocente(id) {
+
+  try {
+    const respuesta = await fetch(`${linkApi}/Docentes/EliminarAsignaturaDocente/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+
+    if (!respuesta.ok) {
+      throw new Error("No se pudo obtener el dato");
+    }
+
+    const docenteID = document.getElementById("docenteIDAsignatura").value;
+
+    BuscarAsignaturasDocente(docenteID);
+
+  } catch (error) {
+    console.error("Error ELIMINAR:", error);
   }
 }

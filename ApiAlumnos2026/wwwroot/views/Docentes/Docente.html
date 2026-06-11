@@ -49,7 +49,7 @@
                   <label for="email" class="form-label">Email</label>
                   <input type="email" class="form-control input-requerido" id="email" placeholder="Ingrese un Email"
                     style="text-transform: lowercase" />
-                        <span class="error-texto text-danger" id="errorEmail"></span>
+                  <span class="error-texto text-danger" id="errorEmail"></span>
                 </div>
 
               </form>
@@ -95,12 +95,58 @@
       </div>
 
 
+      <!-- Modal historial -->
+      <div class="modal fade" id="modalAsignaturasDocente" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5 subTitulo-vista">ASIGNATURAS DEL DOCENTE</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+              <form class="row formAsignaturaDocente">
+                <input type="hidden" id="docenteIDAsignatura" value="0" disabled />
+
+                <div class="mb-3 col-6">
+                  <label for="selectAsignaturas" class="form-label">Asignatura</label>
+                  <select id="selectAsignaturas" class="form-control">
+
+                  </select>
+                </div>
+
+                <div class="mb-3 col-6 text-center">
+                  <button type="button" style="margin-top: 35px;" class="btn btn-editar" onclick="GuardarAsignaturaDocente()">Guardar</button>
+                </div>
+              </form>
+
+
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Asignatura</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-asignaturas-docentes">
+
+                </tbody>
+              </table>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
       <table class="table table-bordered table-sm">
         <thead>
           <tr>
             <th scope="col">Docente</th>
             <th scope="col">DNI</th>
             <th scope="col">Email</th>
+            <th scope="col"></th>
             <th scope="col"></th>
             <th scope="col"></th>
             <th scope="col"></th>

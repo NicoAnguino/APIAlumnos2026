@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiAlumnos2026.Models;
+using ApiAlumnos2026.ModelsView;
 
 namespace ApiAlumnos2026.Controllers
 {
@@ -169,6 +170,70 @@ namespace ApiAlumnos2026.Controllers
             }
 
             _context.Docentes.Remove(docente);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
+
+        [HttpGet("ListadoAsignaturasDocente/{id}")]
+        public async Task<ActionResult<IEnumerable<VistaAsignaturaDocente>>> GetListadoAsignaturasDocente(int id)
+        {
+            //INICIAMOS UN LISTADO VACIO PARA MOSTRAR EN PANTALLA
+            List<VistaAsignaturaDocente> datosMostrar = new List<VistaAsignaturaDocente>();
+
+            //BUSCAMOS TODOS LOS ALUMNOS DE LA BASE DE DATOS
+            var asignaturasDocente = await _context.AsignaturasDocentes.Where(a => a.DocenteID == id).ToListAsync();
+
+            //POR CADA Docente LO RECORREMOS PARA BUSCAR SUS NOTAS 
+            foreach (var asignaturaDocente in asignaturasDocente)
+            {
+                var asignatura = _context.Asignaturas.Where(a => a.AsignaturaID == asignaturaDocente.AsignaturaID).Single();
+                var asignaturaMostrar = new VistaAsignaturaDocente
+                {
+                    AsignaturaDocenteID = asignaturaDocente.AsignaturaDocenteID,
+                    AsignaturaID = asignaturaDocente.AsignaturaID,
+                    Descripcion = asignatura.Descripcion
+                };
+                datosMostrar.Add(asignaturaMostrar);
+            }
+
+            return datosMostrar.ToList();
+        }
+
+        [HttpPost("GuardarAsignaturaDocente")]
+        public async Task<ActionResult<AsignaturaDocente>> PostPromedioAsignatura(AsignaturaDocente asignaturaDocente)
+        {
+            if (asignaturaDocente.DocenteID > 0 && asignaturaDocente.AsignaturaID > 0)
+            {
+
+                //PRIMERO BUSCAR QUE NO EXISTA PARA ESE DOCENTE LA ASIGNATURA
+                var existeAsignaturaDocente = _context.AsignaturasDocentes
+                                                .Where(a => a.DocenteID == asignaturaDocente.DocenteID
+                                                && a.AsignaturaID == asignaturaDocente.AsignaturaID).Count();
+
+                if (existeAsignaturaDocente == 0)
+                {
+                    _context.AsignaturasDocentes.Add(asignaturaDocente);
+                    _context.SaveChanges();
+                }
+            }
+
+            return asignaturaDocente;
+        }
+
+
+         // DELETE: api/Docentes/5 esta seccion del aplicativo no se usa el delete
+        [HttpDelete("EliminarAsignaturaDocente/{id}")]
+        public async Task<IActionResult> DeleteAsignaturaDocente(int id)
+        {
+            var asignaturaDocente = await _context.AsignaturasDocentes.FindAsync(id);
+            if (asignaturaDocente == null)
+            {
+                return NotFound();
+            }
+
+            _context.AsignaturasDocentes.Remove(asignaturaDocente);
             await _context.SaveChangesAsync();
 
             return Ok();
