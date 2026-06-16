@@ -18,7 +18,7 @@ function saveTokens(token, refreshToken) {
 }
 
 function refreshToken() {
-  return fetch(linkApi + "auth/refresh-token", {
+  return fetch(linkApi + "/auth/refresh-token", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

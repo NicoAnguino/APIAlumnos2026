@@ -28,22 +28,56 @@ namespace ApiAlumnos2026.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VistaAsignatura>>> GetAsignaturas()
         {
-            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            
             List<VistaAsignatura> vistaAsignaturas = new List<VistaAsignatura>();
 
-            var asignaturas = await _context.Asignaturas.Where(a => a .Eliminado == false).OrderBy(n => n.Descripcion).ToListAsync();
-
-            foreach (var asignatura in asignaturas)
+            //BUSCAMOS EL USUARIO ID
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId != null)
             {
-                var elemento = new VistaAsignatura
-                {
-                    AsignaturaID = asignatura.AsignaturaID,
-                    Descripcion = asignatura.Descripcion,
-                    Eliminado = asignatura.Eliminado
-                };
-                vistaAsignaturas.Add(elemento);
+                //BUSCAMOS EL USUARIO PARA SABER EL EMAIL
+                var usuario = _context.Users.Where(d => d.Id == userId).Single();
 
+                //DISTINTO AL ADMIN
+                if (usuario.Email != "admin@gmail.com")
+                {
+                    //BUSCAMOS EL DOCENTE RELACIONADO
+                    var docente = _context.Docentes.Where(d => d.Email == usuario.Email).SingleOrDefault();
+
+                    if (docente != null)
+                    {
+                        //DE ESE DOCENTE VER LAS ASIGNATURAS QUE TIENE
+                        var asignaturasDocente = _context.AsignaturasDocentes.Where(a => a.DocenteID == docente.DocenteID).ToList();
+
+                        foreach (var asignaturaDocente in asignaturasDocente)
+                        {
+                            var asignatura = _context.Asignaturas.Where(a => a.AsignaturaID == asignaturaDocente.AsignaturaID).Single();
+
+                            var elemento = new VistaAsignatura
+                            {
+                                AsignaturaID = asignatura.AsignaturaID,
+                                Descripcion = asignatura.Descripcion,
+                                Eliminado = asignatura.Eliminado
+                            };
+                            vistaAsignaturas.Add(elemento);
+                        }
+                    }
+                }
+                else
+                {
+                    var asignaturas = await _context.Asignaturas.Where(a => a.Eliminado == false).OrderBy(n => n.Descripcion).ToListAsync();
+
+                    foreach (var asignatura in asignaturas)
+                    {
+                        var elemento = new VistaAsignatura
+                        {
+                            AsignaturaID = asignatura.AsignaturaID,
+                            Descripcion = asignatura.Descripcion,
+                            Eliminado = asignatura.Eliminado
+                        };
+                        vistaAsignaturas.Add(elemento);
+
+                    }
+                }
             }
 
             return vistaAsignaturas;

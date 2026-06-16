@@ -9,12 +9,14 @@ async function ObtenerDocentes() {
 
   modal.hide();
 
-  const respuesta = await fetch(`${linkApi}/Docentes`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+  const respuesta = await authFetch("/Docentes");
+
+  // const respuesta = await fetch(`${linkApi}/Docentes`, {
+  //   method: "GET",
+  //   headers: {
+  //     "Content-Type": "application/json"
+  //   }
+  // });
 
   const docentes = await respuesta.json();
   //console.log(docentes);
@@ -82,14 +84,16 @@ function validarCamposRequeridos(contenedor) { //funcion que valida que los camp
 async function AbrirModalEditar(id) {
 
   try {
-    const respuesta = await fetch(`${linkApi}/Docentes/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    // const respuesta = await fetch(`${linkApi}/Docentes/${id}`,
+    //   {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   }
+    // );
+
+     const respuesta = await authFetch("/Docentes/" + id);
 
     if (!respuesta.ok) {
       throw new Error("No se pudo obtener el dato");
@@ -144,22 +148,32 @@ async function Guardar() {
 
   if (nombreDocente != "" && email != "") {
     if (docenteID > 0) {
-      const respuesta = await fetch(`${linkApi}/Docentes/${docenteID}`, {
+      // const respuesta = await fetch(`${linkApi}/Docentes/${docenteID}`, {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify(docente)
+      // });
+
+      const res = await authFetch(`/Docentes/${docenteID}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
         body: JSON.stringify(docente)
-      });
+    });
     }
     else {
-      const respuesta = await fetch(`${linkApi}/Docentes`, {
+      // const respuesta = await fetch(`${linkApi}/Docentes`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify(docente)
+      // });
+
+      const respuesta = await authFetch(`/Docentes`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
         body: JSON.stringify(docente)
-      });
+    });
     }
 
     ObtenerDocentes();
@@ -171,14 +185,18 @@ async function Guardar() {
 async function Eliminar(id) {
 
   try {
-    const respuesta = await fetch(`${linkApi}/Docentes/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    // const respuesta = await fetch(`${linkApi}/Docentes/${id}`,
+    //   {
+    //     method: "DELETE",
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   }
+    // );
+
+     const respuesta = await authFetch(`/Docentes/${id}`, {
+        method: "DELETE"
+    });
 
     if (!respuesta.ok) {
       throw new Error("No se pudo obtener el dato");
@@ -274,14 +292,17 @@ async function ObtenerAsignaturas() {
 async function BuscarAsignaturasDocente(id) {
 
   try {
-    const respuesta = await fetch(`${linkApi}/docentes/ListadoAsignaturasDocente/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    // const respuesta = await fetch(`${linkApi}/docentes/ListadoAsignaturasDocente/${id}`,
+    //   {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   }
+    // );
+
+      const respuesta = await authFetch("/Docentes/ListadoAsignaturasDocente/" + id);
+
 
     if (!respuesta.ok) {
       throw new Error("No se pudo obtener el dato");
@@ -353,12 +374,17 @@ async function GuardarAsignaturaDocente() {
 
   if (docenteID > 0 && asignaturaID > 0) {
 
-    const respuesta = await fetch(`${linkApi}/Docentes/GuardarAsignaturaDocente`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(docente)
+    // const respuesta = await fetch(`${linkApi}/Docentes/GuardarAsignaturaDocente`, {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   },
+    //   body: JSON.stringify(docente)
+    // });
+
+     const respuesta = await authFetch(`/Docentes/GuardarAsignaturaDocente`, {
+        method: "POST",
+        body: JSON.stringify(docente)
     });
 
 
@@ -371,14 +397,18 @@ async function GuardarAsignaturaDocente() {
 async function EliminarAsignaturaDocente(id) {
 
   try {
-    const respuesta = await fetch(`${linkApi}/Docentes/EliminarAsignaturaDocente/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    // const respuesta = await fetch(`${linkApi}/Docentes/EliminarAsignaturaDocente/${id}`,
+    //   {
+    //     method: "DELETE",
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   }
+    // );
+
+     const respuesta = await authFetch(`/Docentes/EliminarAsignaturaDocente/${id}`, {
+        method: "DELETE"
+    });
 
     if (!respuesta.ok) {
       throw new Error("No se pudo obtener el dato");

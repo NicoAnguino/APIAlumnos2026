@@ -7,17 +7,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ApiAlumnos2026.Models;
 using ApiAlumnos2026.ModelsView;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiAlumnos2026.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DocentesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DocentesController(ApplicationDbContext context)
+        public DocentesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
+
             _context = context;
         }
 
@@ -135,7 +141,7 @@ namespace ApiAlumnos2026.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Docente>> PostAlumno(Docente docente)
+        public async Task<ActionResult<Docente>> PostDocente(Docente docente)
         {
 
             if (!string.IsNullOrEmpty(docente.NombreCompleto))
@@ -146,6 +152,7 @@ namespace ApiAlumnos2026.Controllers
             {
                 docente.Email = docente.Email?.ToLower();
             }
+
             var docenteExiste = await _context.Docentes.Where(t => t.DNI == docente.DNI).FirstOrDefaultAsync();
 
             if (docenteExiste != null)
@@ -154,9 +161,36 @@ namespace ApiAlumnos2026.Controllers
             }
 
             _context.Docentes.Add(docente);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetDocente", new { id = docente.DocenteID }, docente);
+
+            var user = new ApplicationUser
+            {
+                UserName = docente.Email,
+                Email = docente.Email,
+                NombreCompleto = docente.NombreCompleto
+            };
+
+            //HACEMOS USO DEL MÉTODO REGISTRAR USUARIO
+            var result = await _userManager.CreateAsync(user, "Ezpeleta_2026");
+
+            if (result.Succeeded)
+            {
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("GetDocente", new { id = docente.DocenteID }, docente);
+            }
+
+
+            var error = "";
+            foreach (var textoerror in result.Errors)
+            {
+                error += textoerror.Description;
+            }
+
+            return BadRequest(new
+            {
+                mensaje = error
+            });
         }
 
         // DELETE: api/Docentes/5 esta seccion del aplicativo no se usa el delete
@@ -182,7 +216,7 @@ namespace ApiAlumnos2026.Controllers
             //INICIAMOS UN LISTADO VACIO PARA MOSTRAR EN PANTALLA
             List<VistaAsignaturaDocente> datosMostrar = new List<VistaAsignaturaDocente>();
 
-            //BUSCAMOS TODOS LOS ALUMNOS DE LA BASE DE DATOS
+            //BUSCAMOS TODOS LOS DOCENTES DE LA BASE DE DATOS
             var asignaturasDocente = await _context.AsignaturasDocentes.Where(a => a.DocenteID == id).ToListAsync();
 
             //POR CADA Docente LO RECORREMOS PARA BUSCAR SUS NOTAS 
@@ -223,7 +257,7 @@ namespace ApiAlumnos2026.Controllers
         }
 
 
-         // DELETE: api/Docentes/5 esta seccion del aplicativo no se usa el delete
+        // DELETE: api/Docentes/5 esta seccion del aplicativo no se usa el delete
         [HttpDelete("EliminarAsignaturaDocente/{id}")]
         public async Task<IActionResult> DeleteAsignaturaDocente(int id)
         {

@@ -1,12 +1,7 @@
 //HACER PRIMERO EL METODO PARA ARMAR EL COMBO DESPLEGABLE DE CATEGORIAS
 async function ObtenerAsignaturas() {
 
-    const respuesta = await fetch(`${linkApi}/Asignaturas`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    });
+    const respuesta = await authFetch("/asignaturas");
 
     const asignaturas = await respuesta.json();
 
@@ -26,12 +21,7 @@ ObtenerAlumnos();
 
 async function ObtenerAlumnos() {
 
-  const respuesta = await fetch(`${linkApi}/Alumnos`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+   const respuesta = await authFetch("/Alumnos");
 
   const alumnos = await respuesta.json();
 

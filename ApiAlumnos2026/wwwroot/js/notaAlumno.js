@@ -2,12 +2,7 @@
 
 async function ObtenerAlumnos() {
 
-  const respuesta = await fetch(`${linkApi}/Alumnos`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+  const respuesta = await authFetch("/Alumnos");
 
   const alumnos = await respuesta.json();
 
@@ -26,12 +21,7 @@ async function ObtenerAlumnos() {
 
 async function ObtenerAsignaturas() {
 
-  const respuesta = await fetch(`${linkApi}/Asignaturas`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+  const respuesta = await authFetch("/Asignaturas");
 
   const asignaturas = await respuesta.json();
 
@@ -58,12 +48,15 @@ async function ObtenerNotasAlumnos() {
 
   modal.hide();
 
-  const respuesta = await fetch(`${linkApi}/NotasAlumnos`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json"
-    }
-  });
+  // const respuesta = await fetch(`${linkApi}/NotasAlumnos`, {
+  //   method: "GET",
+  //   headers: {
+  //     "Content-Type": "application/json"
+  //   }
+  // });
+
+  const respuesta = await authFetch("/NotasAlumnos");
+
 
   const notas = await respuesta.json();
   console.log(notas);
@@ -128,14 +121,17 @@ function validarCamposRequeridos(contenedor) { //funcion que valida que los camp
 async function AbrirModalEditar(id) {
 
   try {
-    const respuesta = await fetch(`${linkApi}/NotasAlumnos/${id}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    // const respuesta = await fetch(`${linkApi}/NotasAlumnos/${id}`,
+    //   {
+    //     method: "GET",
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   }
+    // );
+
+    const respuesta = await authFetch("/NotasAlumnos/" + id);
+
 
     if (!respuesta.ok) {
       throw new Error("No se pudo obtener el dato");
@@ -180,20 +176,30 @@ async function GuardarNota() {
 
   if (nota > 0 && nota <= 10) {
     if (notaAlumnoID > 0) {
-      const respuesta = await fetch(`${linkApi}/NotasAlumnos/${notaAlumnoID}`, {
+      // const respuesta = await fetch(`${linkApi}/NotasAlumnos/${notaAlumnoID}`, {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify(notaAlumno)
+      // });
+
+      const res = await authFetch(`/NotasAlumnos/${notaAlumnoID}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json"
-        },
         body: JSON.stringify(notaAlumno)
       });
     }
     else {
-      const respuesta = await fetch(`${linkApi}/NotasAlumnos`, {
+      // const respuesta = await fetch(`${linkApi}/NotasAlumnos`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify(notaAlumno)
+      // });
+
+      const respuesta = await authFetch(`/NotasAlumnos`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
         body: JSON.stringify(notaAlumno)
       });
     }
@@ -207,14 +213,18 @@ async function GuardarNota() {
 async function Eliminar(id) {
 
   try {
-    const respuesta = await fetch(`${linkApi}/NotasAlumnos/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    // const respuesta = await fetch(`${linkApi}/NotasAlumnos/${id}`,
+    //   {
+    //     method: "DELETE",
+    //     headers: {
+    //       "Content-Type": "application/json"
+    //     }
+    //   }
+    // );
+
+    const respuesta = await authFetch(`/NotasAlumnos/${id}`, {
+      method: "DELETE"
+    });
 
     if (!respuesta.ok) {
       throw new Error("No se pudo obtener el dato");
