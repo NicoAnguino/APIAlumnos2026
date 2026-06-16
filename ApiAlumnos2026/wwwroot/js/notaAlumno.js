@@ -68,28 +68,34 @@ async function ObtenerNotasAlumnos() {
   const bodyNotasAlumnos = document.getElementById("tbody-alumnos-notas");
   bodyNotasAlumnos.innerHTML = "";
 
-  notas.forEach((nota) => {
+  notas.forEach((notaAlumno) => {
     const tr = document.createElement("tr");
 
+    let nota = notaAlumno.nota;
+    if(notaAlumno.nota == 0){
+       nota = 'AUSENTE';
+    }
+
     tr.innerHTML = `
-       <td class="text-center">${nota.fechaString}</td>
-            <td>${nota.nombreCompleto}</td>
-            <td class="ocultarElemento768">${nota.dni} </td>
-              <td>${nota.asignaturaNombre} </td>
+       <td class="text-center">${notaAlumno.fechaString}</td>
+            <td>${notaAlumno.nombreCompleto}</td>
+            <td class="ocultarElemento768">${notaAlumno.dni} </td>
+              <td>${notaAlumno.asignaturaNombre} </td>
             
-            <td class="text-center">${nota.nota} </td>
+            <td class="text-center">${nota} </td>
+
                <td class="text-center columnaBtn">
-                <button class="btn btn-utilidad" onclick="AbrirModalHistorial(${nota.notaAlumnoID})">
+                <button class="btn btn-utilidad" onclick="AbrirModalHistorial(${notaAlumno.notaAlumnoID})">
                  <i class="fa-solid fa-history"></i>
                  Historial</button>
             </td>
             <td class="text-center columnaBtn">
-                <button class="btn btn-editar" onclick="AbrirModalEditar(${nota.notaAlumnoID})">
+                <button class="btn btn-editar" onclick="AbrirModalEditar(${notaAlumno.notaAlumnoID})">
                  <i class="fa-solid fa-pen"></i>
                  Editar</button>
             </td>
             <td class="text-center columnaBtn">
-                <button class="btn btn-eliminar" onclick="Eliminar(${nota.notaAlumnoID})">
+                <button class="btn btn-eliminar" onclick="Eliminar(${notaAlumno.notaAlumnoID})">
                  <i class="fa-solid fa-trash"></i>
                  Eliminar</button>
             </td>
@@ -174,7 +180,7 @@ async function GuardarNota() {
     Nota: nota
   };
 
-  if (nota > 0 && nota <= 10) {
+  if (nota >= 0 && nota <= 10) {
     if (notaAlumnoID > 0) {
       // const respuesta = await fetch(`${linkApi}/NotasAlumnos/${notaAlumnoID}`, {
       //   method: "PUT",
@@ -250,7 +256,7 @@ async function LimpiarModal() {
   document.getElementById("notaAlumnoID").value = 0;
   // document.getElementById("alumnoNombre").value = "";
   document.getElementById("fecha").value = fechaStringInput;
-  document.getElementById("nota").value = "";
+  document.getElementById("nota").value = "0";
 }
 
 ObtenerAlumnos();

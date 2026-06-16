@@ -292,14 +292,6 @@ async function ObtenerAsignaturas() {
 async function BuscarAsignaturasDocente(id) {
 
   try {
-    // const respuesta = await fetch(`${linkApi}/docentes/ListadoAsignaturasDocente/${id}`,
-    //   {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   }
-    // );
 
       const respuesta = await authFetch("/Docentes/ListadoAsignaturasDocente/" + id);
 
@@ -349,8 +341,8 @@ async function BuscarAsignaturasDocente(id) {
 async function AbrirModalAsignaturasDocente(id) {
 
   document.getElementById("docenteIDAsignatura").value = id;
-  ObtenerAsignaturas();
-  BuscarAsignaturasDocente(id);
+  ObtenerAsignaturas();//completar el select asignaturas del modal
+  BuscarAsignaturasDocente(id);//completar tabla asignaturas del docente
 
   var modal = bootstrap.Modal.getOrCreateInstance(
     document.getElementById('modalAsignaturasDocente')
@@ -374,19 +366,10 @@ async function GuardarAsignaturaDocente() {
 
   if (docenteID > 0 && asignaturaID > 0) {
 
-    // const respuesta = await fetch(`${linkApi}/Docentes/GuardarAsignaturaDocente`, {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json"
-    //   },
-    //   body: JSON.stringify(docente)
-    // });
-
-     const respuesta = await authFetch(`/Docentes/GuardarAsignaturaDocente`, {
+    const respuesta = await authFetch(`/Docentes/GuardarAsignaturaDocente`, {
         method: "POST",
         body: JSON.stringify(docente)
     });
-
 
     BuscarAsignaturasDocente(docenteID);
   }
@@ -397,14 +380,6 @@ async function GuardarAsignaturaDocente() {
 async function EliminarAsignaturaDocente(id) {
 
   try {
-    // const respuesta = await fetch(`${linkApi}/Docentes/EliminarAsignaturaDocente/${id}`,
-    //   {
-    //     method: "DELETE",
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   }
-    // );
 
      const respuesta = await authFetch(`/Docentes/EliminarAsignaturaDocente/${id}`, {
         method: "DELETE"
