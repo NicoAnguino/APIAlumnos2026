@@ -41,6 +41,14 @@ function navigateTo(vista) {
 }
 
 function actualizarLinkActivo() {
+
+  // //CERRAR EL MENU HAMBURGUESA CADA VEZ QUE SELECCIONA UNA ACCION
+  // const sidebar = document.querySelector(".sidebar");
+  // const menuToggler = document.querySelector(".menu-toggler");
+  // sidebar.style.height = "56px";
+  // menuToggler.querySelector("span").innerText = "menu";
+  // //FIN CERRAR EL MENU HAMBURGUESA CADA VEZ QUE SELECCIONA UNA ACCION
+
   const vistaActual = window.location.hash.replace('#', '') || 'home';
 
   // Elimina la clase 'active' de todos los nav-items y links

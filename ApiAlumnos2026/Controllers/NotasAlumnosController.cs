@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using ApiAlumnos2026.Models;
 using ApiAlumnos2026.ModelsView;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ApiAlumnos2026.Controllers
 {
@@ -27,57 +28,70 @@ namespace ApiAlumnos2026.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<VistaNotaAlumno>>> GetNotasAlumnos()
         {
+            var userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+
             List<VistaNotaAlumno> vistaNotasAlumnos = new List<VistaNotaAlumno>();
 
-            var notasAlumnos = await _context.NotasAlumnos.Include(a => a.Asignatura).Include(a => a.Alumno).OrderBy(n => n.Alumno.NombreCompleto).ToListAsync();
-
-            foreach (var notaAlumno in notasAlumnos)
+            if (userEmail != null)
             {
-                var mostrarNotaAlumno = new VistaNotaAlumno
+                if (userEmail != "admin@gmail.com")
                 {
-                    NotaAlumnoID = notaAlumno.NotaAlumnoID,
-                    AlumnoID = notaAlumno.AlumnoID,
-                    NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
-                    AsignaturaID = notaAlumno.AsignaturaID,
-                    AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
-                    FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
-                    FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
-                    DNI = notaAlumno.Alumno.DNI,
-                    Nota = notaAlumno.Nota
-                };
-                vistaNotasAlumnos.Add(mostrarNotaAlumno);
+                    //BUSCAMOS EL DOCENTE RELACIONADO
+                    var docente = _context.Docentes.Where(d => d.Email == userEmail).SingleOrDefault();
+                    //BUSCAR LAS NOTAS DE LAS ASIGNATURAS QUE PUEDE VER EL DOCENTE AL NO SER ADMINISTRADOR
 
+                    if (docente != null)
+                    {
+                        //DE ESE DOCENTE VER LAS ASIGNATURAS QUE TIENE
+                        var asignaturasDocente = _context.AsignaturasDocentes.Where(a => a.DocenteID == docente.DocenteID).ToList();
+                        foreach (var asignaturaDocente in asignaturasDocente)
+                        {
+                            var notasAlumnos = await _context.NotasAlumnos
+                            .Include(a => a.Asignatura).Include(a => a.Alumno)
+                            .Where(n => n.AsignaturaID == asignaturaDocente.AsignaturaID)
+                            .OrderBy(n => n.Alumno.NombreCompleto).ToListAsync();
+
+                            foreach (var notaAlumno in notasAlumnos)
+                            {
+                                var mostrarNotaAlumno = new VistaNotaAlumno
+                                {
+                                    NotaAlumnoID = notaAlumno.NotaAlumnoID,
+                                    AlumnoID = notaAlumno.AlumnoID,
+                                    NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
+                                    AsignaturaID = notaAlumno.AsignaturaID,
+                                    AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
+                                    FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
+                                    FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
+                                    DNI = notaAlumno.Alumno.DNI,
+                                    Nota = notaAlumno.Nota
+                                };
+                                vistaNotasAlumnos.Add(mostrarNotaAlumno);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    var notasAlumnos = await _context.NotasAlumnos.Include(a => a.Asignatura).Include(a => a.Alumno).OrderBy(n => n.Alumno.NombreCompleto).ToListAsync();
+
+                    foreach (var notaAlumno in notasAlumnos)
+                    {
+                        var mostrarNotaAlumno = new VistaNotaAlumno
+                        {
+                            NotaAlumnoID = notaAlumno.NotaAlumnoID,
+                            AlumnoID = notaAlumno.AlumnoID,
+                            NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
+                            AsignaturaID = notaAlumno.AsignaturaID,
+                            AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
+                            FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
+                            FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
+                            DNI = notaAlumno.Alumno.DNI,
+                            Nota = notaAlumno.Nota
+                        };
+                        vistaNotasAlumnos.Add(mostrarNotaAlumno);
+                    }
+                }
             }
-
-
-            // //traspaso de datos
-
-            // //BUSCAR LAS NOTA ALUMNOS PARA SACAR LA INFO DE ALUMNOS
-            // foreach (var notaAlumno in notasAlumnos)
-            // {
-            //     //BUSCAR EN LA TABLA ALUMNO SI EXISTE ESE ALUMNO
-            //     var alumno = _context.Alumnos.Where(a => a.DNI == notaAlumno.Alumno.DNI).SingleOrDefault();
-            //     if (alumno == null)
-            //     {
-            //         // //CREAR ALUMNO
-            //         alumno = new Alumno
-            //         {
-            //             NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
-            //             DNI = notaAlumno.Alumno.DNI,
-            //             Sexo = Sexo.Otro,
-            //             Domicilio = ""
-            //         };
-            //         //LO AGREGAMOS A LA TABLA
-            //          _context.Alumnos.Add(alumno);
-            //          //GUARDAMOS LOS CAMBIOS
-            //         await _context.SaveChangesAsync();
-
-            //         //ASIGNAMOS EL ALUMNOID GENERADO AL REGISTRO DE NOTA ALUMNO
-            //         notaAlumno.AlumnoID = alumno.AlumnoID;
-            //           await _context.SaveChangesAsync();
-            //     }
-            // }
-            // //fin traspaso de datos
 
             return vistaNotasAlumnos;
         }

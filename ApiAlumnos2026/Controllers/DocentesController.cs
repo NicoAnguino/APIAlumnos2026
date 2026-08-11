@@ -9,6 +9,7 @@ using ApiAlumnos2026.Models;
 using ApiAlumnos2026.ModelsView;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace ApiAlumnos2026.Controllers
 {
@@ -31,7 +32,17 @@ namespace ApiAlumnos2026.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Docente>>> GetDocentes()
         {
-            var docentes = await _context.Docentes.OrderBy(n => n.NombreCompleto).ToListAsync();
+            var userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+
+            var docentes = await _context.Docentes.Where(a => a.Eliminado == false).OrderBy(n => n.NombreCompleto).ToListAsync();
+
+            if (userEmail != null)
+            {
+                if (userEmail != "admin@gmail.com")
+                {
+                    docentes = docentes.Where(d => d.Email == userEmail).ToList();
+                }
+            }
 
             return docentes;
         }
@@ -197,14 +208,29 @@ namespace ApiAlumnos2026.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDocente(int id)
         {
-            var docente = await _context.Docentes.FindAsync(id);
-            if (docente == null)
+            //NO SE PUEDE ELIMINAR UNO MISMO
+            var userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
+            if (userEmail != null)
             {
-                return NotFound();
-            }
+                var docente = await _context.Docentes.FindAsync(id);
+                if (docente == null)
+                {
+                    return NotFound();
+                }
 
-            _context.Docentes.Remove(docente);
-            await _context.SaveChangesAsync();
+                if (userEmail != docente.Email)
+                {
+                    // //ANTES DE ELIMINAR EL DOCENTE ELIMINAR EL USUARIO RELACIONADO A ESTE
+                    // var usuarioDocente = await _context.Users.Where(u => u.Email == docente.Email).SingleOrDefaultAsync();
+                    // if (usuarioDocente != null)
+                    // {
+                    //     var result = await _userManager.DeleteAsync(usuarioDocente);
+                    // }
+
+                    docente.Eliminado = true;
+                    await _context.SaveChangesAsync();
+                }
+            }
 
             return Ok();
         }

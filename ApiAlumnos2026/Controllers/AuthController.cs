@@ -63,6 +63,7 @@ public class AuthController : ControllerBase
             {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Email, user.Email),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -88,12 +89,19 @@ public class AuthController : ControllerBase
 
             return Ok(new
             {
+                success = true,
                 token = jwt,
                 refreshToken = refreshToken
             });
         }
 
-        return Unauthorized("Credenciales inválidas");
+        //return Unauthorized("Credenciales inválidas");
+        //return Unauthorized(new { message = "Usuario o contraseña incorrectos" });
+        return Ok(new 
+    { 
+        success = false, 
+        message = "Usuario o contraseña incorrectos" 
+    });
     }
 
     private string GenerarRefreshToken()
@@ -122,7 +130,9 @@ public class AuthController : ControllerBase
         //GENERAMOS EL NUEVO TOKEN DE ACCESO PRINCIPAL
         var claims = new[]
         {
-        new Claim(ClaimTypes.Name, user.UserName),
+         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(ClaimTypes.Email, user.Email),
         new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
     };
 

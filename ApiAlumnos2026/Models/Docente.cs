@@ -10,6 +10,7 @@ namespace ApiAlumnos2026.Models
         public int DNI {get; set; }
         public Sexo Sexo {get; set;}
         public string? Email {get; set;}
+         public bool Eliminado {get; set; }
     }
 
     public enum Sexo

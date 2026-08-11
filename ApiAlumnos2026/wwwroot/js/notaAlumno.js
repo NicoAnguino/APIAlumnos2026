@@ -87,17 +87,17 @@ async function ObtenerNotasAlumnos() {
                <td class="text-center columnaBtn">
                 <button class="btn btn-utilidad" onclick="AbrirModalHistorial(${notaAlumno.notaAlumnoID})">
                  <i class="fa-solid fa-history"></i>
-                 Historial</button>
+                </button>
             </td>
             <td class="text-center columnaBtn">
                 <button class="btn btn-editar" onclick="AbrirModalEditar(${notaAlumno.notaAlumnoID})">
                  <i class="fa-solid fa-pen"></i>
-                 Editar</button>
+                </button>
             </td>
             <td class="text-center columnaBtn">
                 <button class="btn btn-eliminar" onclick="Eliminar(${notaAlumno.notaAlumnoID})">
                  <i class="fa-solid fa-trash"></i>
-                 Eliminar</button>
+                </button>
             </td>
         `;
 

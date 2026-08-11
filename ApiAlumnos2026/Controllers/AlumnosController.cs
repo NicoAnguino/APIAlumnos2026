@@ -32,7 +32,7 @@ namespace ApiAlumnos2026.Controllers
         {
             List<VistaAlumno> vistaAlumnos = new List<VistaAlumno>();
 
-            var alumnos = await _context.Alumnos.OrderBy(n => n.NombreCompleto).ToListAsync();
+            var alumnos = await _context.Alumnos.Where(a => a.Eliminado == false).OrderBy(n => n.NombreCompleto).ToListAsync();
 
             foreach (var alumno in alumnos)
             {
@@ -240,14 +240,23 @@ namespace ApiAlumnos2026.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAlumno(int id)
         {
+            //SOLO PUEDE ELIMINAR SI ESE ALUMNO NO TIENE NOTAS CARGADAS
+
             var alumno = await _context.Alumnos.FindAsync(id);
             if (alumno == null)
             {
                 return NotFound();
             }
 
-            _context.Alumnos.Remove(alumno);
+            alumno.Eliminado = true;
             await _context.SaveChangesAsync();
+
+            // var cantidadNotasAlumno = _context.NotasAlumnos.Where(n => n.AlumnoID == alumno.AlumnoID).Count();
+            // if (cantidadNotasAlumno == 0)
+            // {
+            //     _context.Alumnos.Remove(alumno);
+            //     await _context.SaveChangesAsync();
+            // }
 
             return Ok();
         }
