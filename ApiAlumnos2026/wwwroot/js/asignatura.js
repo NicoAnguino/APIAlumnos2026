@@ -161,14 +161,9 @@ async function Guardar() {
 async function Eliminar(id) {
 
   try {
-    const respuesta = await fetch(`${linkApi}/Asignaturas/${id}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json"
-        }
-      }
-    );
+   const respuesta = await authFetch(`/Asignaturas/${id}`, {
+        method: "DELETE"
+    });
 
     if (!respuesta.ok) {
       throw new Error("No se pudo obtener el dato");
