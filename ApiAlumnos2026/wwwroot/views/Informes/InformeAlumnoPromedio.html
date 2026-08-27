@@ -3,25 +3,31 @@
 </div>
 
 <div class="p-3 mb-2 bg-white text-dark">
-<div class="row">
-  <div class="col-md-2 mb-2">
-        <label class="control-label">Desde</label>
-        <input class="form-control form-control-sm" type="date" id="FechaDesdeBuscar"/>
-    </div>
-  <div class="col-md-2 mb-2">
-        <label class="control-label">Hasta</label>
-        <input class="form-control form-control-sm" type="date" id="FechaHastaBuscar"/>
-    </div>
-    <div class="col-md-4 mb-2">
-        <label class="control-label">Asignatura</label>
-        <select class="form-control form-control-sm" id="selectAsignaturas"></select>
-    </div>
-     <div class="col-md-4 mb-2">
-        <label class="control-label">Alumno</label>
-        <select class="form-control form-control-sm" id="selectAlumnos"></select>
+    <div class="row">
+        <div class="col-md-2 mb-2">
+            <label class="control-label">Desde</label>
+            <input class="form-control form-control-sm" type="date" id="FechaDesdeBuscar" />
+        </div>
+        <div class="col-md-2 mb-2">
+            <label class="control-label">Hasta</label>
+            <input class="form-control form-control-sm" type="date" id="FechaHastaBuscar" />
+        </div>
+        <div class="col-md-4 mb-2">
+            <label class="control-label">Asignatura</label>
+            <select class="form-control form-control-sm" id="selectAsignaturas"></select>
+        </div>
+        <div class="col-md-4 mb-2">
+            <label class="control-label">Alumno</label>
+            <select class="form-control form-control-sm" id="selectAlumnos"></select>
+        </div>
     </div>
 </div>
-</div>
+
+     <!-- Button trigger modal -->
+      <button type="button" class="btn-nuevo-flotante"  onclick="imprimir()">
+        Imprimir Informe
+      </button>
+
 
 <div class="table-responsive">
     <table class="table table-bordered table-sm" id="tablaAlumnos" width="100%" cellspacing="0">
@@ -36,4 +42,192 @@
     </table>
 </div>
 
+
 <script src="../js/informeAlumnoPromedio.js"></script>
+
+
+
+<script>
+
+    function imprimir() {
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        // ============================
+        // ENCABEZADO
+        // ============================
+
+        pdf.setFontSize(16);
+        pdf.setFont("helvetica", "bold");
+
+        pdf.text(
+            'INFORME DE PROMEDIOS DE ALUMNOS',
+            105,
+            20,
+            { align: 'center' }
+        );
+
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(10);
+
+        pdf.text(
+            'Listado de alumnos y promedios',
+            105,
+            27,
+            { align: 'center' }
+        );
+
+        pdf.setFontSize(9);
+
+        pdf.text(
+            'Curso: 3° AÑO',
+            15,
+            38
+        );
+
+        pdf.text(
+            'Fecha: 27/08/2026',
+            195,
+            38,
+            { align: 'right' }
+        );
+
+
+        // Línea debajo del encabezado
+        pdf.setLineWidth(0.5);
+
+        pdf.line(
+            15,
+            42,
+            195,
+            42
+        );
+
+
+        // ============================
+        // TABLA
+        // ============================
+
+        pdf.autoTable({
+
+            html: '#tablaAlumnos',
+
+            startY: 48,
+
+            theme: 'grid',
+
+            styles: {
+                font: 'helvetica',
+                fontSize: 8,
+                cellPadding: 3,
+                lineWidth: 0.1,
+                valign: 'middle'
+            },
+
+            // CABECERA
+            headStyles: {
+                fillColor: [31, 78, 121],
+                textColor: [255, 255, 255],
+                fontStyle: 'bold',
+                //halign: 'center',
+                valign: 'middle'
+            },
+
+            didParseCell: function (data) {
+
+                if (data.section === 'head') {
+
+                    if (data.column.index === 0) {
+                        data.cell.styles.halign = 'left';
+                    }
+
+                    if (data.column.index === 1) {
+                        data.cell.styles.halign = 'center';
+                    }
+
+                    if (data.column.index === 2) {
+                        data.cell.styles.halign = 'right';
+                    }
+                }
+            },
+
+            // CUERPO
+            bodyStyles: {
+                textColor: [50, 50, 50]
+            },
+
+            // Filas alternadas
+            alternateRowStyles: {
+                fillColor: [245, 247, 250]
+            },
+
+            // Bordes
+            tableLineColor: [200, 200, 200],
+            tableLineWidth: 0.1,
+
+            // Columnas
+            columnStyles: {
+                0: {
+                    halign: 'left',
+                    cellWidth: 122
+                },
+
+                1: {
+                    halign: 'center',
+                    cellWidth: 30
+                },
+
+                2: {
+                    halign: 'right',
+                    cellWidth: 30
+                }
+                
+            },
+
+            // Repetir encabezado en cada página
+            showHead: 'everyPage',
+
+            // Evitar cortar una fila
+            rowPageBreak: 'avoid'
+        });
+
+
+        // ============================
+        // PIE DE PÁGINA
+        // ============================
+
+        const paginas = pdf.internal.getNumberOfPages();
+
+        for (let i = 1; i <= paginas; i++) {
+
+            pdf.setPage(i);
+
+            pdf.setFont("helvetica", "normal");
+            pdf.setFontSize(8);
+
+            pdf.setTextColor(100, 100, 100);
+
+            pdf.text(
+                'API ALUMNOS',
+                15,
+                290
+            );
+
+            pdf.text(
+                'Página ' + i + ' de ' + paginas,
+                195,
+                290,
+                { align: 'right' }
+            );
+        }
+
+
+        // ============================
+        // GUARDAR
+        // ============================
+
+        pdf.save('InformePromedios.pdf');
+    }
+
+</script>
