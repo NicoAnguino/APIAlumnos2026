@@ -30,11 +30,11 @@ namespace ApiAlumnos2026.Controllers
             //BUSCAMOS TODOS LOS ALUMNOS DE LA BASE DE DATOS
             var alumnos = await _context.Alumnos.ToListAsync();
 
-                if (filtro.AlumnoID > 0)
-                {
-                    //QUIERE DECIR QUE FILTRA POR ALGUNA ASIGNATURA EN PARTICULAR
-                    alumnos = alumnos.Where(a => a.AlumnoID == filtro.AlumnoID).ToList();
-                }
+            if (filtro.AlumnoID > 0)
+            {
+                //QUIERE DECIR QUE FILTRA POR ALGUNA ASIGNATURA EN PARTICULAR
+                alumnos = alumnos.Where(a => a.AlumnoID == filtro.AlumnoID).ToList();
+            }
 
             //POR CADA ALUMNO LO RECORREMOS PARA BUSCAR SUS NOTAS 
             foreach (var alumno in alumnos)
@@ -202,7 +202,7 @@ namespace ApiAlumnos2026.Controllers
             return datosMostrar.ToList();
         }
 
-         [HttpGet("HistorialDocente/{id}")]
+        [HttpGet("HistorialDocente/{id}")]
         public async Task<ActionResult<IEnumerable<VistaHistorialDocente>>> GetHistorialDocente(int id)
         {
             //INICIAMOS UN LISTADO VACIO PARA MOSTRAR EN PANTALLA
@@ -232,5 +232,51 @@ namespace ApiAlumnos2026.Controllers
             return datosMostrar.ToList();
         }
 
+
+        //metodo para buscar docentes y asignaturas de cada uno
+
+        [HttpGet("AsignaturasPorDocente")]
+        public async Task<ActionResult<IEnumerable<VistaDocenteAsignaturas>>> GetAsignaturasPorDocente(int id)
+        {
+            //INICIAMOS UN LISTADO VACIO PARA MOSTRAR EN PANTALLA LUEGO DE HABER COMPLETADO LOS DATOS
+            List<VistaDocenteAsignaturas> docentesMostrar = new List<VistaDocenteAsignaturas>();
+
+            //BUSCAMOS TODOS LOS DOCENTES ACTIVOS DE LA BASE DE DATOS
+            var docentes = await _context.Docentes.Where(a => !a.Eliminado).ToListAsync();
+
+            //POR CADA DOCENTE LO RECORREMOS PARA BUSCAR SUS ASIGNATURAS 
+            foreach (var docente in docentes.OrderByDescending(a => a.NombreCompleto))
+            {
+                //INSERTAR LOS DATOS DEL PRIMER NIVEL QUE SERIA EL DOCENTE
+                var docenteMostrar = new VistaDocenteAsignaturas
+                {
+                    DocenteID = docente.DocenteID,
+                    NombreCompleto = docente.NombreCompleto,
+                    DNI = docente.DNI,
+                    Email = docente.Email,
+                    ListadoAsignaturas = new List<VistaAsignatura>()
+                };
+                docentesMostrar.Add(docenteMostrar);
+
+                //LUEGO DEBEMOS BUSCAR LAS ASIGNATURAS DEL DOCENTE
+                var asignaturasDocente = _context.AsignaturasDocentes
+                .Where(a => a.DocenteID == docente.DocenteID).ToList();
+                foreach (var asignaturaDocente in asignaturasDocente)
+                {
+                    //POR CADA ASIGNATURA DOCENTE BUSCAR LA INFO DE ASIGNATURA
+                    var asignatura = _context.Asignaturas
+                    .Where(a => a.AsignaturaID == asignaturaDocente.AsignaturaID).Single();
+
+                    var asignaturaMostrar = new VistaAsignatura
+                    {
+                        AsignaturaID = asignaturaDocente.AsignaturaID,
+                        Descripcion = asignatura.Descripcion
+                    };
+                    docenteMostrar.ListadoAsignaturas.Add(asignaturaMostrar);
+                }
+            }
+
+            return docentesMostrar.ToList();
+        }
     }
 }
