@@ -227,7 +227,13 @@
         // GUARDAR
         // ============================
 
-        pdf.save('InformePromedios.pdf');
+        //GUARDAR COMO PDF
+        //pdf.save('InformePromedios.pdf');
+
+        //ABRIR EN PESTAÑA DEL NAVEGADOR CON EL VISUALIZADOR
+        const pdfBlob = pdf.output('blob');
+        const blobUrl = URL.createObjectURL(pdfBlob);
+        window.open(blobUrl, '_blank');
     }
 
 </script>
