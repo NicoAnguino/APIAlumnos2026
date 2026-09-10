@@ -19,6 +19,8 @@ async function ObtenerAsignaturas() {
 
 }
 
+var myPieChart;
+
 async function ObtenerAlumnos() {
 
    const respuesta = await authFetch("/Alumnos");
@@ -71,6 +73,17 @@ document
   ?.addEventListener("change", getPromedioAlumnos);
 
 
+function colorAleatorio() {
+    const hexadecimal = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
+    let color_aleatorio = "#";
+    
+    for (let i = 0; i < 6; i++) {
+        let posarray = Math.floor(Math.random() * hexadecimal.length); // Genera entero entre 0 y 15
+        color_aleatorio += hexadecimal[posarray];
+    }
+    
+    return color_aleatorio;
+}
 
 async function getPromedioAlumnos() {
     let fechaDesde = document.getElementById("FechaDesdeBuscar").value;
@@ -98,6 +111,12 @@ async function getPromedioAlumnos() {
         body: JSON.stringify(filtros)
     });
 
+    //myPieChart.destroy();
+
+     var labels = [];
+    var data = [];
+      var fondo = [];
+
     const alumnos = await res.json();
     const tbody = document.querySelector("#tablaAlumnos tbody");
     tbody.innerHTML = "";
@@ -112,7 +131,24 @@ async function getPromedioAlumnos() {
         `;
         tbody.appendChild(rowInsertar);
 
+         labels.push(alumno.nombreCompleto);
+          var color = colorAleatorio();
+                fondo.push(color);
+        data.push(alumno.promedio);
+
     });
+
+      var ctxPie = document.getElementById("myPieChart");
+            myPieChart = new Chart(ctxPie, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                         backgroundColor: fondo,
+                    }],
+                },
+            });
 }
 
 ObtenerAsignaturas();

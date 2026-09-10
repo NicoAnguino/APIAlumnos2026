@@ -30,21 +30,39 @@
                 Imprimir Informe
             </button>
 
-            <table class="table table-bordered table-sm" id="tablaAlumnos">
-                <thead>
-                    <tr>
-                        <th>Alumno</th>
-                        <th class="text-center" style="width: 100px;">DNI</th>
-                        <th class="text-center" style="width: 100px;">Promedio</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div class="row">
+                <div class="col-xl-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-chart-bar me-1"></i>
+                            Gráfico de Torta
+                        </div>
+                        <div class="card-body"><canvas id="myPieChart" width="100%" height="40"></canvas></div>
+                    </div>
+                </div>
+                <div class="col-xl-6">
+                    <table class="table table-bordered table-sm" id="tablaAlumnos">
+                        <thead>
+                            <tr>
+                                <th>Alumno</th>
+                                <th class="text-center" style="width: 100px;">DNI</th>
+                                <th class="text-center" style="width: 100px;">Promedio</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+
+
+
 
 
         </article>
     </section>
 </div>
+
 
 <script src="../js/informeAlumnoPromedio.js"></script>
 <script>
