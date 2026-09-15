@@ -3,17 +3,17 @@
   <section>
     <article>
 
-      <h2 class="titulo-vista">Asignaturas</h2>
+      <h2 class="titulo-vista">Carreras</h2>
 
 
       <!-- Button trigger modal -->
-      <button type="button" class="btn-nuevo-flotante" data-bs-toggle="modal" data-bs-target="#modalAsignatura">
+      <button type="button" class="btn-nuevo-flotante" data-bs-toggle="modal" data-bs-target="#modalCarrera">
         <i class="fa-solid fa-plus"></i>
-        Nueva Asignatura
+        Nueva Carrera
       </button>
 
       <!-- Modal crear tipo actiidad -->
-      <div class="modal fade" id="modalAsignatura" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal fade" id="modalCarrera" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
@@ -22,28 +22,25 @@
                 onclick="LimpiarModal()"></button>
             </div>
             <div class="modal-body">
-              <form class="formAsignatura">
-                <input type="hidden" id="asignaturaID" value="0" disabled />
+              <form class="formCarrera">
+                <input type="hidden" id="carreraID" value="0" disabled />
 
                 <div class="mb-3">
-                  <label for="selectCarreras" class="form-label">Carrera</label>
-                  <select id="selectCarreras" class="form-control" onchange="CompletarSelectAnios()">
-
-                  </select>
-                </div>
-
-                <div class="mb-3">
-                  <label for="selectAnios" class="form-label">Año</label>
-                  <select id="selectAnios" class="form-control">
-
-                  </select>
-                </div>
-
-                <div class="mb-3">
-                  <label for="asignaturaNombre" class="form-label">Descripción</label>
-                  <input type="text" class="form-control input-requerido" id="asignaturaNombre"
+                  <label for="carreraNombre" class="form-label">Descripción</label>
+                  <input type="text" class="form-control input-requerido" id="carreraNombre"
                     placeholder="Ingrese el nombre completo" style="text-transform: uppercase" />
                   <!-- <span class="error-texto" id="errorNombre">Campo obligatorio</span> -->
+                </div>
+
+                <div class="mb-3">
+                  <label for="duracion" class="form-label">Duración</label>
+                  <select id="duracion" class="form-control">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                     <option value="5">5</option>
+                  </select>
                 </div>
 
               </form>
@@ -62,19 +59,19 @@
         <thead>
           <tr>
             <th scope="col">Descripción</th>
-            <th scope="col">Año</th>
+            <th scope="col">Duración</th>
             <th scope="col"></th>
             <th scope="col"></th>
           </tr>
         </thead>
-        <tbody id="tbody-asignaturas">
+        <tbody id="tbody-carreras">
 
         </tbody>
       </table>
 
 
 
-      <script src="../js/asignatura.js"></script>
+      <script src="../js/carrera.js"></script>
     </article>
   </section>
 

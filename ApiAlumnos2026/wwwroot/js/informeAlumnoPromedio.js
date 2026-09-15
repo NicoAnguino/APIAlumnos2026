@@ -1,7 +1,7 @@
 //HACER PRIMERO EL METODO PARA ARMAR EL COMBO DESPLEGABLE DE CATEGORIAS
 async function ObtenerAsignaturas() {
 
-   const respuesta = await authFetch("/asignaturas");
+    const respuesta = await authFetch("/asignaturas");
 
     const asignaturas = await respuesta.json();
 
@@ -23,27 +23,27 @@ var myPieChart;
 
 async function ObtenerAlumnos() {
 
-   const respuesta = await authFetch("/Alumnos");
+    const respuesta = await authFetch("/Alumnos");
 
 
-  const alumnos = await respuesta.json();
+    const alumnos = await respuesta.json();
 
-  const comboSelect = document.querySelector("#selectAlumnos");
-  comboSelect.innerHTML = "";
+    const comboSelect = document.querySelector("#selectAlumnos");
+    comboSelect.innerHTML = "";
 
 
-  let opciones = `<option value="0">[TODOS LOS ALUMNOS]</option>`;
-  alumnos.forEach((alumno) => {
-    opciones += `<option value="${alumno.alumnoID}">${alumno.nombreCompleto}</option>`;
-  });
-  comboSelect.innerHTML = opciones;
+    let opciones = `<option value="0">[TODOS LOS ALUMNOS]</option>`;
+    alumnos.forEach((alumno) => {
+        opciones += `<option value="${alumno.alumnoID}">${alumno.nombreCompleto}</option>`;
+    });
+    comboSelect.innerHTML = opciones;
 
-   getPromedioAlumnos();
+    getPromedioAlumnos();
 }
 
 function IniciarFechas() {
     const hoy = new Date();
-    
+
     const fechaDesde = hoy.getFullYear() + '-' +
         String(hoy.getMonth() + 1).padStart(2, '0') + '-01';
 
@@ -57,31 +57,31 @@ function IniciarFechas() {
 
 //DECLARAMOS LOS EVENTOS A ESOS INPUT
 document
-  .getElementById("selectAsignaturas")
-  ?.addEventListener("change", getPromedioAlumnos);
+    .getElementById("selectAsignaturas")
+    ?.addEventListener("change", getPromedioAlumnos);
 
-    document
-  .getElementById("selectAlumnos")
-  ?.addEventListener("change", getPromedioAlumnos);
+document
+    .getElementById("selectAlumnos")
+    ?.addEventListener("change", getPromedioAlumnos);
 
-  document
-  .getElementById("FechaDesdeBuscar")
-  ?.addEventListener("change", getPromedioAlumnos);
+document
+    .getElementById("FechaDesdeBuscar")
+    ?.addEventListener("change", getPromedioAlumnos);
 
-  document
-  .getElementById("FechaHastaBuscar")
-  ?.addEventListener("change", getPromedioAlumnos);
+document
+    .getElementById("FechaHastaBuscar")
+    ?.addEventListener("change", getPromedioAlumnos);
 
 
 function colorAleatorio() {
     const hexadecimal = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"];
     let color_aleatorio = "#";
-    
+
     for (let i = 0; i < 6; i++) {
         let posarray = Math.floor(Math.random() * hexadecimal.length); // Genera entero entre 0 y 15
         color_aleatorio += hexadecimal[posarray];
     }
-    
+
     return color_aleatorio;
 }
 
@@ -111,11 +111,13 @@ async function getPromedioAlumnos() {
         body: JSON.stringify(filtros)
     });
 
-    //myPieChart.destroy();
+    if (myPieChart) {
+        myPieChart.destroy();
+    }
 
-     var labels = [];
+    var labels = [];
     var data = [];
-      var fondo = [];
+    var fondo = [];
 
     const alumnos = await res.json();
     const tbody = document.querySelector("#tablaAlumnos tbody");
@@ -131,24 +133,24 @@ async function getPromedioAlumnos() {
         `;
         tbody.appendChild(rowInsertar);
 
-         labels.push(alumno.nombreCompleto);
-          var color = colorAleatorio();
-                fondo.push(color);
+        labels.push(alumno.nombreCompleto);
+        var color = colorAleatorio();
+        fondo.push(color);
         data.push(alumno.promedio);
 
     });
 
-      var ctxPie = document.getElementById("myPieChart");
-            myPieChart = new Chart(ctxPie, {
-                type: 'pie',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: data,
-                         backgroundColor: fondo,
-                    }],
-                },
-            });
+    var ctxPie = document.getElementById("myPieChart");
+    myPieChart = new Chart(ctxPie, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: fondo,
+            }],
+        },
+    });
 }
 
 ObtenerAsignaturas();

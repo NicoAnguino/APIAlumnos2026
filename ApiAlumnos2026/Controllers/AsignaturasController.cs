@@ -97,6 +97,119 @@ namespace ApiAlumnos2026.Controllers
             return asignatura;
         }
 
+            // GET: api/Asignaturas/5
+        [HttpGet("AsignaturasCarrera/{id}")]
+        public async Task<ActionResult<IEnumerable<Asignatura>>> GetAsignaturasCarrera(int id)
+        {
+            var asignaturas = await _context.Asignaturas.Where(a => a.CarreraID == id).ToListAsync();
+
+            if (asignaturas == null)
+            {
+                return NotFound();
+            }
+
+            return asignaturas;
+        }
+
+        [HttpGet("AsignaturasPorCarreras")]
+        public async Task<ActionResult<IEnumerable<VistaCarrera>>> GetAsignaturasPorCarreras()
+        {
+            List<VistaCarrera> carrerasMostrar = new List<VistaCarrera>();
+
+            //BUSCAMOS EL USUARIO ID
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId != null)
+            {
+                //BUSCAMOS EL USUARIO PARA SABER EL EMAIL
+                var usuario = _context.Users.Where(d => d.Id == userId).Single();
+
+                //DISTINTO AL ADMIN
+                if (usuario.Email != "admin@gmail.com")
+                {
+                    //BUSCAMOS EL DOCENTE RELACIONADO
+                    var docente = _context.Docentes.Where(d => d.Email == usuario.Email).SingleOrDefault();
+
+                    if (docente != null)
+                    {
+                        //DE ESE DOCENTE VER LAS ASIGNATURAS QUE TIENE
+                        var asignaturasDocente = _context.AsignaturasDocentes.Where(a => a.DocenteID == docente.DocenteID).ToList();
+
+                        foreach (var asignaturaDocente in asignaturasDocente)
+                        {
+                            var asignatura = _context.Asignaturas.Include(a => a.Carrera).Where(a => a.AsignaturaID == asignaturaDocente.AsignaturaID).Single();
+
+                            //ANTES DE AGREGAR LA ASIGNATURA VER SI EXISTE LA CARRERA A LA QUE PERTENECE
+                            var carrera = carrerasMostrar.Where(c => c.CarreraID == asignatura.CarreraID).SingleOrDefault();
+                            if (carrera == null)
+                            {
+                                carrera = new VistaCarrera
+                                {
+                                    CarreraID = asignatura.CarreraID,
+                                    Nombre = asignatura.Carrera.Nombre,
+                                    Duracion = asignatura.Carrera.Duracion,
+                                    Eliminado = asignatura.Eliminado,
+                                    Asignaturas = new List<VistaAsignatura>()
+                                };
+                                carrerasMostrar.Add(carrera);
+
+                                carrerasMostrar = carrerasMostrar.OrderBy(c => c.Nombre).ToList();
+                            }
+
+                            var elemento = new VistaAsignatura
+                            {
+                                AsignaturaID = asignatura.AsignaturaID,
+                                Descripcion = asignatura.Descripcion,
+                                Anio = asignatura.Anio,
+                                Eliminado = asignatura.Eliminado
+                            };
+                            carrera.Asignaturas.Add(elemento);
+
+                            carrera.Asignaturas = carrera.Asignaturas.OrderBy(c => c.Anio).ThenBy(c => c.Descripcion).ToList();
+
+                        }
+                    }
+                }
+                else
+                {
+                    var asignaturas = await _context.Asignaturas.Include(a => a.Carrera).Where(a => a.Eliminado == false).OrderBy(n => n.Descripcion).ToListAsync();
+
+                    foreach (var asignatura in asignaturas)
+                    {
+                        //ANTES DE AGREGAR LA ASIGNATURA VER SI EXISTE LA CARRERA A LA QUE PERTENECE
+                        var carrera = carrerasMostrar.Where(c => c.CarreraID == asignatura.CarreraID).SingleOrDefault();
+                        if (carrera == null)
+                        {
+                            carrera = new VistaCarrera
+                            {
+                                CarreraID = asignatura.CarreraID,
+                                Nombre = asignatura.Carrera.Nombre,
+                                Duracion = asignatura.Carrera.Duracion,
+                                Eliminado = asignatura.Eliminado,
+                                Asignaturas = new List<VistaAsignatura>()
+                            };
+                            carrerasMostrar.Add(carrera);
+
+                            carrerasMostrar = carrerasMostrar.OrderBy(c => c.Nombre).ToList();
+                        }
+
+                        var elemento = new VistaAsignatura
+                        {
+                            AsignaturaID = asignatura.AsignaturaID,
+                            Descripcion = asignatura.Descripcion,
+                            Anio = asignatura.Anio,
+                            Eliminado = asignatura.Eliminado
+                        };
+                        carrera.Asignaturas.Add(elemento);
+
+                        carrera.Asignaturas = carrera.Asignaturas.OrderBy(c => c.Anio).ThenBy(c => c.Descripcion).ToList();
+
+                    }
+                }
+            }
+
+            return carrerasMostrar;
+        }
+
 
 
         // PUT: api/Asignaturas/5

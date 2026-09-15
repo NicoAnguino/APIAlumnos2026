@@ -6,6 +6,7 @@ namespace ApiAlumnos2026.ModelsView
     {
         public int AsignaturaID { get; set; }
         public string? Descripcion { get; set; }
+        public int Anio { get; set; }
         public bool Eliminado { get; set; }  
     }
 }

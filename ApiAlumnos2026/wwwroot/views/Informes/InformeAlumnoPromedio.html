@@ -52,10 +52,46 @@
                         <tbody></tbody>
                     </table>
                 </div>
+                <div class="col-xl-12">
+                      <div class="card mb-4">
+                        <div class="card-header">
+                            <i class="fas fa-chart-bar me-1"></i>
+                            Gráfico de Barras
+                        </div>
+                        <div class="card-body"><canvas id="myChart"></canvas></div>
+                    </div>
+                    
+                </div>
             </div>
 
 
 
+
+
+
+            <script>
+                const ctx = document.getElementById('myChart');
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+                        datasets: [{
+                            label: '# of Votes',
+                            data: [12, 19, 3, 5, 2, 3],
+                            borderWidth: 1,
+                            backgroundColor: '#3d85c6',
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            </script>
 
 
 

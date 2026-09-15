@@ -1,10 +1,60 @@
+async function ObtenerCarreras() {
+
+  const respuesta = await authFetch("/Carreras");
+
+  const carreras = await respuesta.json();
+
+  const comboSelect = document.querySelector("#selectCarreras");
+  comboSelect.innerHTML = "";
+
+
+  let opciones = '';
+  carreras.forEach((carrera) => {
+    opciones += `<option value="${carrera.carreraID}">${carrera.nombre}</option>`;
+  });
+  comboSelect.innerHTML = opciones;
+
+  //CUANDO TERMINAMOS DE AGREGAR LAS CARRERAS EN EL SELECT
+
+  CompletarSelectAnios();
+  
+  ObtenerAsignaturas();
+}
+
+
+
+async function CompletarSelectAnios() {
+
+  let id = document.getElementById("selectCarreras").value;
+
+  try {
+
+    const respuesta = await authFetch("/Carreras/" + id);
+
+    if (!respuesta.ok) {
+      throw new Error("No se pudo obtener el dato");
+    }
+
+    const carrera = await respuesta.json();
+
+    const comboSelect = document.querySelector("#selectAnios");
+    comboSelect.innerHTML = "";
+
+    let opciones = '';
+    for (let index = 1; index <= carrera.duracion; index++) {
+      opciones += `<option value="${index}">${index} Año</option>`;
+    }
+    comboSelect.innerHTML = opciones;
+
+
+  } catch (error) {
+    console.error("Error editar:", error);
+  }
+}
+
 
 
 async function ObtenerAsignaturas() {
-
-  //const getToken = () => localStorage.getItem("token");
-
-//console.log(getToken());
 
   var modal = bootstrap.Modal.getOrCreateInstance(
     document.getElementById('modalAsignatura')
@@ -12,29 +62,31 @@ async function ObtenerAsignaturas() {
 
   modal.hide();
 
-  const respuesta = await authFetch("/asignaturas");
+  const respuesta = await authFetch("/asignaturas/AsignaturasPorCarreras");
 
-  // const respuesta = await fetch(`${linkApi}/Asignaturas`, {
-  //   method: "GET",
-  //   headers: {
-  //     "Content-Type": "application/json"
-  //   }
-  // });
-
-  const asignaturas = await respuesta.json();
+  const carreras = await respuesta.json();
 
   LimpiarModal();
-
-
 
   const bodyAsignaturas = document.getElementById("tbody-asignaturas");
   bodyAsignaturas.innerHTML = "";
 
-  asignaturas.forEach((asignatura) => {
+  carreras.forEach((carrera) => {
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
+            <td class='table-info' colspan="4">${carrera.nombre} - (DURACIÓN DE ${carrera.duracion} AÑOS)</td>              
+        `;
+
+    bodyAsignaturas.appendChild(tr);
+
+
+    carrera.asignaturas.forEach((asignatura) => {
+      const tr = document.createElement("tr");
+
+      tr.innerHTML = `
             <td>${asignatura.descripcion}</td>
+            <td>${asignatura.anio} AÑO</td>
             <td class="text-center columnaBtn">
  <button class="btn btn-editar" onclick="AbrirModalEditar(${asignatura.asignaturaID})">
         <i class="fa-solid fa-pen"></i>       
@@ -47,7 +99,9 @@ async function ObtenerAsignaturas() {
             </td>
         `;
 
-    bodyAsignaturas.appendChild(tr);
+      bodyAsignaturas.appendChild(tr);
+    });
+
   });
 }
 
@@ -73,16 +127,8 @@ function validarCamposRequeridos(contenedor) { //funcion que valida que los camp
 async function AbrirModalEditar(id) {
 
   try {
-    // const respuesta = await fetch(`${linkApi}/Asignaturas/${id}`,
-    //   {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   }
-    // );
 
-const respuesta = await authFetch("/Asignaturas/" + id);
+    const respuesta = await authFetch("/Asignaturas/" + id);
 
     if (!respuesta.ok) {
       throw new Error("No se pudo obtener el dato");
@@ -92,6 +138,14 @@ const respuesta = await authFetch("/Asignaturas/" + id);
     document.getElementById("titulo-modal").textContent = "EDITAR ASIGNATURA";
     document.getElementById("asignaturaID").value = asignatura.asignaturaID;
     document.getElementById("asignaturaNombre").value = asignatura.descripcion;
+    document.getElementById("selectCarreras").value = asignatura.carreraID;
+    
+    CompletarSelectAnios();
+    
+    setTimeout(() => {
+       document.getElementById("selectAnios").value = asignatura.anio;
+    }, 200);
+   
 
     var modal = bootstrap.Modal.getOrCreateInstance(
       document.getElementById('modalAsignatura')
@@ -114,41 +168,28 @@ async function Guardar() {
   //con eso armamos el objeto para pasar a la api
   const asignatura = {
     asignaturaID: asignaturaID,
+    carreraID: document.getElementById("selectCarreras").value,
+    anio: document.getElementById("selectAnios").value,
     descripcion: descripcion
   };
 
   //console.log(asignatura);
-//verifico que el usuario tenga escrito una descripcion
+  //verifico que el usuario tenga escrito una descripcion
   if (descripcion != "") {
     //pregunto si asignatura es mayor a 0 
     if (asignaturaID > 0) {
-      //al ser mayor a cero va a llamar a al put de la api para editar
-      // const respuesta = await fetch(`${linkApi}/Asignaturas/${asignaturaID}`, {
-      //   method: "PUT",
-      //   headers: {
-      //     "Content-Type": "application/json"
-      //   },
-      //   body: JSON.stringify(asignatura)
-      // });
 
       const res = await authFetch(`/Asignaturas/${asignaturaID}`, {
         method: "PUT",
         body: JSON.stringify(asignatura)
-    });
+      });
     }
     else {
-      // const respuesta = await fetch(`${linkApi}/Asignaturas`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json"
-      //   },
-      //   body: JSON.stringify(asignatura)
-      // });
 
- const res = await authFetch(`/Asignaturas`, {
+      const res = await authFetch(`/Asignaturas`, {
         method: "POST",
         body: JSON.stringify(asignatura)
-    });
+      });
 
     }
 
@@ -161,8 +202,8 @@ async function Guardar() {
 async function Eliminar(id) {
 
   try {
-   const respuesta = await authFetch(`/Asignaturas/${id}`, {
-        method: "DELETE"
+    const respuesta = await authFetch(`/Asignaturas/${id}`, {
+      method: "DELETE"
     });
 
     if (!respuesta.ok) {
@@ -183,4 +224,4 @@ async function LimpiarModal() {
   document.getElementById("titulo-modal").textContent = "CREAR ASIGNATURA";
 }
 
-ObtenerAsignaturas();
+ObtenerCarreras();

@@ -1,34 +1,30 @@
-async function ObtenerCarreras() {
-  const respuesta = await authFetch("/Carreras");
-  const carreras = await respuesta.json();
-  return carreras;
-}
 
-async function ObtenerAsignaturasCarrera(carreraID) {
-  const respuesta = await authFetch("/Asignaturas/AsignaturasCarrera/" + carreraID);
-  const asignaturas = await respuesta.json();
-  return asignaturas;
-}
 
-async function ArmarComboCarreras() {
-  let carreras = await ObtenerCarreras();
+async function ObtenerAlumnos() {
 
-  const comboSelect = document.querySelector("#selectCarreras");
+  const respuesta = await authFetch("/Alumnos");
+
+  const alumnos = await respuesta.json();
+
+  const comboSelect = document.querySelector("#selectAlumnos");
   comboSelect.innerHTML = "";
 
+
   let opciones = '';
-  carreras.forEach((carrera) => {
-    opciones += `<option value="${carrera.carreraID}">${carrera.nombre}</option>`;
+  alumnos.forEach((alumno) => {
+    opciones += `<option value="${alumno.alumnoID}">${alumno.nombreCompleto}</option>`;
   });
   comboSelect.innerHTML = opciones;
 
-  ArmarComboAsignaturas();
+  ObtenerAsignaturas();
 }
 
+async function ObtenerAsignaturas() {
 
-async function ArmarComboAsignaturas() {
-  const carreraID = document.querySelector("#selectCarreras").value;
-  let asignaturas = await ObtenerAsignaturasCarrera(carreraID);
+  const respuesta = await authFetch("/Asignaturas");
+
+  const asignaturas = await respuesta.json();
+
   const comboSelect = document.querySelector("#selectAsignaturas");
   comboSelect.innerHTML = "";
 
@@ -38,74 +34,19 @@ async function ArmarComboAsignaturas() {
     opciones += `<option value="${asignatura.asignaturaID}">${asignatura.descripcion}</option>`;
   });
   comboSelect.innerHTML = opciones;
-}
-
-
-async function ArmarComboCarrerasFiltrar() {
-  let carreras = await ObtenerCarreras();
-
-  const comboSelect = document.querySelector("#selectCarrerasFiltrar");
-  comboSelect.innerHTML = "";
-
-  let opciones = '';
-  carreras.forEach((carrera) => {
-    opciones += `<option value="${carrera.carreraID}">${carrera.nombre}</option>`;
-  });
-  comboSelect.innerHTML = opciones;
-
-  ArmarComboAsignaturasFiltrar();
-}
-
-async function ArmarComboAsignaturasFiltrar() {
-  const carreraID = document.querySelector("#selectCarrerasFiltrar").value;
-  let asignaturas = await ObtenerAsignaturasCarrera(carreraID);
-  const comboSelect = document.querySelector("#selectAsignaturasFiltrar");
-  comboSelect.innerHTML = "";
-
-  let opciones = '';
-  asignaturas.forEach((asignatura) => {
-    opciones += `<option value="${asignatura.asignaturaID}">${asignatura.descripcion}</option>`;
-  });
-  comboSelect.innerHTML = opciones;
-  ArmarComboCarreras();
-  ObtenerAlumnos();
-}
-
-
-
-async function ObtenerAlumnos() {
-
-  //PRIMERO SE HACE EL FETCH A LA API PARA BUSCAR LOS DATOS
-  const respuesta = await authFetch("/Alumnos");
-
-  const alumnos = await respuesta.json();
-
-  //LUEGO CON ESOS DATOS LOS RECORREMOS Y LOS INSERTAMOS EN EL SELECT
-  const comboSelect = document.querySelector("#selectAlumnos");
-  comboSelect.innerHTML = "";
-
-  let opciones = '';
-  alumnos.forEach((alumno) => {
-    opciones += `<option value="${alumno.alumnoID}">${alumno.nombreCompleto}</option>`;
-  });
-  comboSelect.innerHTML = opciones;
 
   ObtenerNotasAlumnos();
-
 }
-
-
 
 
 async function ObtenerNotasAlumnos() {
 
-  const asignaturaFiltrarID = document.querySelector("#selectAsignaturasFiltrar").value;
 
-  const respuesta = await authFetch("/NotasAlumnos/NotasAlumnosAsignaturas/" + asignaturaFiltrarID);
+  const respuesta = await authFetch("/NotasAlumnos");
 
 
   const notas = await respuesta.json();
-  //console.log(notas);
+  console.log(notas);
 
   LimpiarModal();
 
@@ -118,8 +59,8 @@ async function ObtenerNotasAlumnos() {
     const tr = document.createElement("tr");
 
     let nota = notaAlumno.nota;
-    if (notaAlumno.nota == 0) {
-      nota = 'AUSENTE';
+    if(notaAlumno.nota == 0){
+       nota = 'AUSENTE';
     }
 
     tr.innerHTML = `
@@ -225,7 +166,7 @@ async function GuardarNota() {
     asignaturaID: asignaturaID,
     fecha: fecha,
     Nota: nota,
-    tipoInstancia: parseInt(tipoInstancia)
+    tipoInstancia: parseInt(tipoInstancia) 
   };
 
   if (nota >= 0 && nota <= 10 && tipoInstancia > 0) {
@@ -308,7 +249,7 @@ async function LimpiarModal() {
   document.getElementById("nota").value = "0";
 }
 
-ArmarComboCarrerasFiltrar();
+ObtenerAlumnos();
 
 
 

@@ -60,6 +60,7 @@ namespace ApiAlumnos2026.Controllers
                                     NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
                                     AsignaturaID = notaAlumno.AsignaturaID,
                                     AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
+                                    TipoInstanciaNombre = notaAlumno.TipoInstancia.ToString(),
                                     FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
                                     FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
                                     DNI = notaAlumno.Alumno.DNI,
@@ -83,6 +84,7 @@ namespace ApiAlumnos2026.Controllers
                             NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
                             AsignaturaID = notaAlumno.AsignaturaID,
                             AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
+                            TipoInstanciaNombre = notaAlumno.TipoInstancia.ToString(),
                             FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
                             FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
                             DNI = notaAlumno.Alumno.DNI,
@@ -92,9 +94,41 @@ namespace ApiAlumnos2026.Controllers
                     }
                 }
             }
+            return vistaNotasAlumnos;           
+        }
 
+
+        [HttpGet("NotasAlumnosAsignaturas/{id}")]
+        public async Task<ActionResult<IEnumerable<VistaNotaAlumno>>> GetNotasAlumnos(int id)
+        {
+            List<VistaNotaAlumno> vistaNotasAlumnos = new List<VistaNotaAlumno>();
+
+            var notasAlumnos = await _context.NotasAlumnos
+            .Include(a => a.Asignatura).Include(a => a.Alumno)
+            .Where(a => a.AsignaturaID == id)
+            .OrderBy(n => n.Alumno.NombreCompleto).ToListAsync();
+
+            foreach (var notaAlumno in notasAlumnos)
+            {
+                var mostrarNotaAlumno = new VistaNotaAlumno
+                {
+                    NotaAlumnoID = notaAlumno.NotaAlumnoID,
+                    AlumnoID = notaAlumno.AlumnoID,
+                    NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
+                    AsignaturaID = notaAlumno.AsignaturaID,
+                    AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
+                    TipoInstanciaNombre = notaAlumno.TipoInstancia.ToString(),
+                    FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
+                    FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
+                    DNI = notaAlumno.Alumno.DNI,
+                    Nota = notaAlumno.Nota
+                };
+                vistaNotasAlumnos.Add(mostrarNotaAlumno);
+            }
             return vistaNotasAlumnos;
         }
+
+
 
         // GET: api/NotasAlumnos/5
         [HttpGet("{id}")]
@@ -114,6 +148,7 @@ namespace ApiAlumnos2026.Controllers
                 NombreCompleto = notaAlumno.Alumno?.NombreCompleto,
                 AsignaturaID = notaAlumno.AsignaturaID,
                 AsignaturaNombre = notaAlumno.Asignatura.Descripcion,
+                TipoInstancia = notaAlumno.TipoInstancia,
                 FechaString = notaAlumno.Fecha.ToString("dd/MM/yyyy"),
                 FechaStringInput = notaAlumno.Fecha.ToString("yyyy-MM-dd"),
                 DNI = notaAlumno.Alumno.DNI,
@@ -227,12 +262,21 @@ namespace ApiAlumnos2026.Controllers
         [HttpPost]
         public async Task<ActionResult<NotaAlumno>> PostNotaAlumno(NotaAlumno notaAlumno)
         {
+            //ANTES DE CREAR VERIFICAR QUE NO EXISTA LA NOTA DEL PERIODO PARA MISMA ASIGNATURA Y ALUMNO
+
+            var existe = _context.NotasAlumnos
+            .Where(n => n.AlumnoID == notaAlumno.AlumnoID && n.AsignaturaID == notaAlumno.AsignaturaID && n.TipoInstancia == notaAlumno.TipoInstancia)
+            .Any();
+
+            if (!existe)
+            {
+                _context.NotasAlumnos.Add(notaAlumno);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction("GetNotaAlumno", new { id = notaAlumno.NotaAlumnoID }, notaAlumno);
+            }
 
 
-            _context.NotasAlumnos.Add(notaAlumno);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetNotaAlumno", new { id = notaAlumno.NotaAlumnoID }, notaAlumno);
+            return NoContent();
         }
 
         // DELETE: api/NotasAlumnos/5 esta seccion del aplicativo no se usa el delete

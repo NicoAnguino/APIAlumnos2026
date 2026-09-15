@@ -13,7 +13,7 @@
 
       <!-- Modal crear tipo actiidad -->
       <div class="modal fade" id="modalNotaAlumno" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
               <h1 class="modal-title fs-5 subTitulo-vista">Registro</h1>
@@ -23,34 +23,46 @@
             <div class="modal-body">
               <form class="formNotaAlumno">
                 <input type="hidden" id="notaAlumnoID" value="0" disabled />
+                <div class="row">
+                  <div class="mb-3 col-6">
+                    <label for="selectCarreras" class="form-label">Carrera</label>
+                    <select id="selectCarreras" class="form-control" onchange="ArmarComboAsignaturas()">
 
-                <div class="mb-3">
-                  <label for="selectAlumnos" class="form-label">Alumno</label>
-                  <select id="selectAlumnos" class="form-control">
+                    </select>
+                  </div>
+                  <div class="mb-3 col-6">
+                    <label for="selectAsignaturas" class="form-label">Asignatura</label>
+                    <select id="selectAsignaturas" class="form-control">
 
-                  </select>
-                </div>
+                    </select>
+                  </div>
+                  <div class="mb-3 col-4">
+                    <label for="fecha" class="form-label">Fecha</label>
+                    <input type="date" class="form-control" id="fecha" />
+                  </div>
+                  <div class="mb-3 col-8">
+                    <label for="selectAlumnos" class="form-label">Alumno</label>
+                    <select id="selectAlumnos" class="form-control">
 
-                <div class="mb-3">
-                  <label for="selectAsignaturas" class="form-label">Asignatura</label>
-                  <select id="selectAsignaturas" class="form-control">
-
-                  </select>
-                </div>
-
-                <div class="mb-3">
-                  <label for="fecha" class="form-label">Fecha</label>
-                  <input type="date" class="form-control" id="fecha" />
-                </div>
-
-                <!-- <div class="mb-3">
-                  <label for="nota" class="form-label">Nota</label>
-                  <input type="number" class="form-control input-requerido" id="nota" placeholder="Ingrese la Nota" />
-                </div> -->
-
-                 <div class="mb-3">
-                  <label for="nota" class="form-label">Nota</label>
-                  <select id="nota" class="form-control">
+                    </select>
+                  </div>
+                  <div class="mb-3 col-6">
+                    <label for="tipoInstancia" class="form-label">Tipo Instancia</label>
+                    <select id="tipoInstancia" class="form-control">
+                      <option value="0">[SELECCIONE INSTANCIA]</option>
+                      <option value="1">I.Ev.1°</option>
+                      <option value="2">I.Ev.2°</option>
+                      <option value="3">I.Ev.3°</option>
+                      <option value="4">I.Ev.4°</option>
+                      <option value="5">Rec.1</option>
+                      <option value="6">Rec.2</option>
+                      <option value="7">IEFI</option>
+                      <option value="8">R.IEFI</option>
+                    </select>
+                  </div>
+                  <div class="mb-3 col-6">
+                    <label for="nota" class="form-label">Nota</label>
+                    <select id="nota" class="form-control">
                       <option value="0">Ausente</option>
                       <option value="1">1</option>
                       <option value="2">2</option>
@@ -62,9 +74,9 @@
                       <option value="8">8</option>
                       <option value="9">9</option>
                       <option value="10">10</option>
-                  </select>
+                    </select>
+                  </div>
                 </div>
-
               </form>
             </div>
             <div class="modal-footer">
@@ -88,7 +100,6 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-
               <table class="table">
                 <thead>
                   <tr>
@@ -98,16 +109,26 @@
                     <th scope="col">Valor Nuevo</th>
                   </tr>
                 </thead>
-                <tbody id="tbody-historial-notas">
-
-                </tbody>
+                <tbody id="tbody-historial-notas"></tbody>
               </table>
-
             </div>
           </div>
         </div>
       </div>
 
+
+      <div class="p-3 mb-2 bg-white text-dark">
+        <div class="row">
+          <div class="col-lg-4 col-md-6 col-sm-6 mb-2">
+            <label class="control-label">Carrera</label>
+            <select class="form-control form-control-sm" id="selectCarrerasFiltrar"  onchange="ArmarComboAsignaturasFiltrar()"></select>
+          </div>
+          <div class="col-lg-4 col-md-6 col-sm-6 mb-2">
+            <label class="control-label">Asignatura</label>
+            <select class="form-control form-control-sm" id="selectAsignaturasFiltrar" onchange="ObtenerNotasAlumnos()"></select>
+          </div>
+        </div>
+      </div>
 
       <table class="table table-bordered table-sm">
         <thead>
@@ -116,6 +137,7 @@
             <th scope="col">Alumno</th>
             <th class="ocultarElemento768" scope="col">DNI</th>
             <th scope="col">Asignatura</th>
+            <th class="text-center" scope="col">Instancia</th>
             <th class="text-center" scope="col">Nota</th>
             <th scope="col"></th>
             <th scope="col"></th>
