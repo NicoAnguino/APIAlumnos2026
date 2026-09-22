@@ -32,15 +32,34 @@ namespace ApiAlumnos2026.Controllers
 
             //BUSCAMOS EL USUARIO ID
             var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var asignaturas = await BuscarAsignaturasAsync(userId);
+
+            foreach (var asignatura in asignaturas)
+            {
+                var elemento = new VistaAsignatura
+                {
+                    AsignaturaID = asignatura.AsignaturaID,
+                    Descripcion = asignatura.Descripcion,
+                    Eliminado = asignatura.Eliminado
+                };
+                vistaAsignaturas.Add(elemento);
+            }
+
+            return vistaAsignaturas;
+        }
+
+
+        public async Task<List<Asignatura>> BuscarAsignaturasAsync(string userId)
+        {
+            List<Asignatura> asignaturas = new List<Asignatura>();
             if (userId != null)
             {
-                //BUSCAMOS EL USUARIO PARA SABER EL EMAIL
                 var usuario = _context.Users.Where(d => d.Id == userId).Single();
 
                 //DISTINTO AL ADMIN
                 if (usuario.Email != "admin@gmail.com")
                 {
-                    //BUSCAMOS EL DOCENTE RELACIONADO
                     var docente = _context.Docentes.Where(d => d.Email == usuario.Email).SingleOrDefault();
 
                     if (docente != null)
@@ -51,37 +70,23 @@ namespace ApiAlumnos2026.Controllers
                         foreach (var asignaturaDocente in asignaturasDocente)
                         {
                             var asignatura = _context.Asignaturas.Where(a => a.AsignaturaID == asignaturaDocente.AsignaturaID).Single();
+                            asignaturas.Add(asignatura);
 
-                            var elemento = new VistaAsignatura
-                            {
-                                AsignaturaID = asignatura.AsignaturaID,
-                                Descripcion = asignatura.Descripcion,
-                                Eliminado = asignatura.Eliminado
-                            };
-                            vistaAsignaturas.Add(elemento);
                         }
                     }
                 }
                 else
                 {
-                    var asignaturas = await _context.Asignaturas.Where(a => a.Eliminado == false).OrderBy(n => n.Descripcion).ToListAsync();
-
-                    foreach (var asignatura in asignaturas)
-                    {
-                        var elemento = new VistaAsignatura
-                        {
-                            AsignaturaID = asignatura.AsignaturaID,
-                            Descripcion = asignatura.Descripcion,
-                            Eliminado = asignatura.Eliminado
-                        };
-                        vistaAsignaturas.Add(elemento);
-
-                    }
+                    asignaturas.AddRange(_context.Asignaturas
+                                        .Where(a => a.Eliminado == false) // Filtrando por userId (si corresponde)
+                                        .OrderBy(n => n.Descripcion)
+                                        .ToList());
                 }
             }
 
-            return vistaAsignaturas;
+            return asignaturas;
         }
+
 
         // GET: api/Asignaturas/5
         [HttpGet("{id}")]
@@ -97,16 +102,15 @@ namespace ApiAlumnos2026.Controllers
             return asignatura;
         }
 
-            // GET: api/Asignaturas/5
+        // GET: api/Asignaturas/5
         [HttpGet("AsignaturasCarrera/{id}")]
         public async Task<ActionResult<IEnumerable<Asignatura>>> GetAsignaturasCarrera(int id)
         {
-            var asignaturas = await _context.Asignaturas.Where(a => a.CarreraID == id).ToListAsync();
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if (asignaturas == null)
-            {
-                return NotFound();
-            }
+            var asignaturas = await BuscarAsignaturasAsync(userId);
+
+            asignaturas = asignaturas.Where(a => a.CarreraID == id).ToList();
 
             return asignaturas;
         }
