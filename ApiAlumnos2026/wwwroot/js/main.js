@@ -7,7 +7,7 @@ function cargarComponente(id, path) {
 }
 
 function cargarVista(view) {
-  fetch(`../views/${view}.html`)
+  fetch(`views/${view}.html`)
     .then(res => res.text())
     .then(html => {
       const app = document.getElementById('app');
@@ -101,13 +101,13 @@ window.addEventListener('hashchange', cargarVistaPorHash);
 window.addEventListener('load', actualizarLinkActivo);
 //DOMContentLoaded se ejecuta cuando el HTML ha sido completamente cargado y analizado, sin importar si los recursos externos (imágenes, hojas de estilo, etc.) se han cargado
 window.addEventListener('DOMContentLoaded', () => {
-  cargarComponente('accordionSidebar', '../views/components/sidebar.html')
+  cargarComponente('accordionSidebar', 'views/components/sidebar.html')
   .then(() => {//ES UNA PROMESA QUE DESENCADENA UNA ACCION
     initSidebar(); // 👈 acá está la clave
     actualizarLinkActivo(); //Se ejecuta después de cargar el menú
   });
 
-  cargarComponente('footer', '../views/components/footer.html');
+  cargarComponente('footer', 'views/components/footer.html');
   cargarVistaPorHash();
   setTimeout("verificarUsuario();", 200);//Se ejecuta después de cargar el menú 
 });

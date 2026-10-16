@@ -8,7 +8,7 @@ function verificarUsuario(){
     if (!token) {
         localStorage.removeItem("token");
         localStorage.removeItem("email");
-        window.location.href = "../views/usuarios/login.html";
+        window.location.href = "views/usuarios/login.html";
         return;
     }
 }  
@@ -22,7 +22,7 @@ async function cerrarSesion() {
     if (!token || !email) {
         localStorage.removeItem("token");
         localStorage.removeItem("email");
-        window.location.href = "../views/login.html";
+        window.location.href = "views/login.html";
         return;
     }
     const apiBase = `${linkApi}/auth`;
@@ -49,5 +49,5 @@ async function cerrarSesion() {
     localStorage.removeItem("token");
     localStorage.removeItem("email");
    
-    window.location.href = "../views/Usuarios/login.html";
+    window.location.href = "views/Usuarios/login.html";
 }

@@ -53,7 +53,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
@@ -70,19 +70,31 @@ var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// if (app.Environment.IsDevelopment())
+// {
+//     app.UseSwagger();
+//     app.UseSwaggerUI();
+// }
 
 app.UseHttpsRedirection();
+
+// 1. SOPORTE PARA ARCHIVOS ESTÁTICOS (wwwroot)
+// Permite buscar automáticamente index.html en la raíz de wwwroot
+app.UseDefaultFiles(); 
+// Sirve archivos estáticos (css, js, imágenes, htmls en /views/)
+app.UseStaticFiles();
 
 app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
+// 2. MAPEAR CONTROLADORS DE LA API
 app.MapControllers();
+
+// 3. FALLBACK PARA SPA / RUTAS DEL FRONTEND
+// Cualquier ruta que no coincida con una API o un archivo físico existente 
+// redirigirá al index.html para que tu frontend gestione el enrutamiento.
+app.MapFallbackToFile("index.html");
 
 app.Run();
