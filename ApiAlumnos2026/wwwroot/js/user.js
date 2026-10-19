@@ -81,7 +81,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
         localStorage.setItem("email", data.email);
         localStorage.setItem("rol", result.rol);
 
-        window.location.href = "../index.html";
+        window.location.href = "/index.html";
 
     } catch (error) {
         // Captura tanto errores de red como el throw new Error del response.ok

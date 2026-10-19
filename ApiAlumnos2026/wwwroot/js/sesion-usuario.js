@@ -8,8 +8,12 @@ function verificarUsuario(){
     if (!token) {
         localStorage.removeItem("token");
         localStorage.removeItem("email");
+<<<<<<< HEAD
         localStorage.removeItem("rol");
         window.location.href = "../views/usuarios/login.html";
+=======
+        window.location.href = "views/usuarios/login.html";
+>>>>>>> 18c5edbe5dba97453e9044df8299e86403377cad
         return;
     }
 }  
@@ -52,5 +56,5 @@ async function cerrarSesion() {
     localStorage.removeItem("email");
     localStorage.removeItem("rol");
    
-    window.location.href = "../views/Usuarios/login.html";
+    window.location.href = "views/Usuarios/login.html";
 }
