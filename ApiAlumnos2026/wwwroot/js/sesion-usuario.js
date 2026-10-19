@@ -8,6 +8,7 @@ function verificarUsuario(){
     if (!token) {
         localStorage.removeItem("token");
         localStorage.removeItem("email");
+        localStorage.removeItem("rol");
         window.location.href = "../views/usuarios/login.html";
         return;
     }
@@ -22,6 +23,7 @@ async function cerrarSesion() {
     if (!token || !email) {
         localStorage.removeItem("token");
         localStorage.removeItem("email");
+        localStorage.removeItem("rol");
         window.location.href = "../views/login.html";
         return;
     }
@@ -48,6 +50,7 @@ async function cerrarSesion() {
     // Limpiar token y redirigir
     localStorage.removeItem("token");
     localStorage.removeItem("email");
+    localStorage.removeItem("rol");
    
     window.location.href = "../views/Usuarios/login.html";
 }

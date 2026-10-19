@@ -79,6 +79,7 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
         localStorage.setItem("token", result.token);
         localStorage.setItem("refreshToken", result.refreshToken);
         localStorage.setItem("email", data.email);
+        localStorage.setItem("rol", result.rol);
 
         window.location.href = "../index.html";
 

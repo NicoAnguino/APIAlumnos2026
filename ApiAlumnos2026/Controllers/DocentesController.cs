@@ -32,16 +32,15 @@ namespace ApiAlumnos2026.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Docente>>> GetDocentes()
         {
-            var userEmail = HttpContext.User.FindFirst(ClaimTypes.Email)?.Value;
-
+            var userId = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var usuario = _context.Users.Where(d => d.Id == userId).Single();
+            var rolUsuario = _context.UserRoles.Where(u => u.UserId == usuario.Id).Single();
+            var rol = _context.Roles.Where(u => u.Id == rolUsuario.RoleId).Single();
             var docentes = await _context.Docentes.Where(a => a.Eliminado == false).OrderBy(n => n.NombreCompleto).ToListAsync();
-
-            if (userEmail != null)
-            {
-                if (userEmail != "admin@gmail.com")
-                {
-                    docentes = docentes.Where(d => d.Email == userEmail).ToList();
-                }
+            //DISTINTO AL ADMIN
+            if (rol.NormalizedName != "ADMINISTRADOR")
+            {             
+                docentes = docentes.Where(d => d.Email == usuario.Email).ToList();                
             }
 
             return docentes;
@@ -63,6 +62,7 @@ namespace ApiAlumnos2026.Controllers
 
 
 
+        [Authorize(Roles = "ADMINISTRADOR")]
         // PUT: api/Docentes/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDocente(int id, Docente docente)
@@ -151,6 +151,7 @@ namespace ApiAlumnos2026.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "ADMINISTRADOR")]
         [HttpPost]
         public async Task<ActionResult<Docente>> PostDocente(Docente docente)
         {
@@ -186,6 +187,7 @@ namespace ApiAlumnos2026.Controllers
 
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "DOCENTE");
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction("GetDocente", new { id = docente.DocenteID }, docente);
@@ -204,6 +206,7 @@ namespace ApiAlumnos2026.Controllers
             });
         }
 
+        [Authorize(Roles = "ADMINISTRADOR")]
         // DELETE: api/Docentes/5 esta seccion del aplicativo no se usa el delete
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDocente(int id)

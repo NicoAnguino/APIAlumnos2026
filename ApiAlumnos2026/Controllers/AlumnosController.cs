@@ -66,7 +66,7 @@ namespace ApiAlumnos2026.Controllers
         }
 
 
-
+        [Authorize(Roles = "ADMINISTRADOR")]
         // PUT: api/Alumnos/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAlumno(int id, Alumno alumno)
@@ -182,6 +182,7 @@ namespace ApiAlumnos2026.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "ADMINISTRADOR")]
         [HttpPost]
         public async Task<ActionResult> PostAlumno(Alumno alumno)
         {
@@ -219,6 +220,7 @@ namespace ApiAlumnos2026.Controllers
 
             if (result.Succeeded)
             {
+                await _userManager.AddToRoleAsync(user, "ALUMNO");
                 await _context.SaveChangesAsync();
 
                 return CreatedAtAction("GetAlumno", new { id = alumno.AlumnoID }, alumno);
@@ -236,6 +238,7 @@ namespace ApiAlumnos2026.Controllers
             });
         }
 
+        [Authorize(Roles = "ADMINISTRADOR")]
         // DELETE: api/Alumnos/5 esta seccion del aplicativo no se usa el delete
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAlumno(int id)

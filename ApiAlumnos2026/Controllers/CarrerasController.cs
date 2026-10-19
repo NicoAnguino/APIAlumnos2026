@@ -35,7 +35,9 @@ namespace ApiAlumnos2026.Controllers
             {
                 //BUSCAMOS EL USUARIO PARA SABER EL EMAIL
                 var usuario = _context.Users.Where(d => d.Id == userId).Single();
-                if (usuario.Email != "admin@gmail.com")
+                var rolUsuario = _context.UserRoles.Where(d => d.UserId == userId).Single();
+                var rol = _context.Roles.Where(d => d.Id == rolUsuario.RoleId).Single();
+                if (rol.NormalizedName != "ADMINISTRADOR")
                 {
                     //BUSCAMOS EL DOCENTE RELACIONADO
                     var docente = _context.Docentes.Where(d => d.Email == usuario.Email).SingleOrDefault();
@@ -101,7 +103,7 @@ namespace ApiAlumnos2026.Controllers
         }
 
 
-
+        [Authorize(Roles = "ADMINISTRADOR")]
         // PUT: api/Carreras/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCarrera(int id, Carrera carrera)
@@ -144,6 +146,7 @@ namespace ApiAlumnos2026.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "ADMINISTRADOR")]
         [HttpPost]
         public async Task<ActionResult<Carrera>> PostCarrera(Carrera carrera)
         {
@@ -166,6 +169,7 @@ namespace ApiAlumnos2026.Controllers
             return CreatedAtAction("GetCarrera", new { id = carrera.CarreraID }, carrera);
         }
 
+        [Authorize(Roles = "ADMINISTRADOR")]
         // DELETE: api/Carreras/5 esta seccion del aplicativo no se usa el delete
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCarrera(int id)

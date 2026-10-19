@@ -173,14 +173,6 @@ function validarCamposRequeridos(contenedor) { //funcion que valida que los camp
 async function AbrirModalEditar(id) {
 
   try {
-    // const respuesta = await fetch(`${linkApi}/NotasAlumnos/${id}`,
-    //   {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   }
-    // );
 
     const respuesta = await authFetch("/NotasAlumnos/" + id);
 
@@ -230,28 +222,12 @@ async function GuardarNota() {
 
   if (nota >= 0 && nota <= 10 && tipoInstancia > 0) {
     if (notaAlumnoID > 0) {
-      // const respuesta = await fetch(`${linkApi}/NotasAlumnos/${notaAlumnoID}`, {
-      //   method: "PUT",
-      //   headers: {
-      //     "Content-Type": "application/json"
-      //   },
-      //   body: JSON.stringify(notaAlumno)
-      // });
-
       const res = await authFetch(`/NotasAlumnos/${notaAlumnoID}`, {
         method: "PUT",
         body: JSON.stringify(notaAlumno)
       });
     }
     else {
-      // const respuesta = await fetch(`${linkApi}/NotasAlumnos`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json"
-      //   },
-      //   body: JSON.stringify(notaAlumno)
-      // });
-
       const respuesta = await authFetch(`/NotasAlumnos`, {
         method: "POST",
         body: JSON.stringify(notaAlumno)
@@ -267,14 +243,6 @@ async function GuardarNota() {
 async function Eliminar(id) {
 
   try {
-    // const respuesta = await fetch(`${linkApi}/NotasAlumnos/${id}`,
-    //   {
-    //     method: "DELETE",
-    //     headers: {
-    //       "Content-Type": "application/json"
-    //     }
-    //   }
-    // );
 
     const respuesta = await authFetch(`/NotasAlumnos/${id}`, {
       method: "DELETE"

@@ -56,9 +56,10 @@ namespace ApiAlumnos2026.Controllers
             if (userId != null)
             {
                 var usuario = _context.Users.Where(d => d.Id == userId).Single();
-
+                var rolUsuario = _context.UserRoles.Where(u => u.UserId == usuario.Id).Single();
+                var rol = _context.Roles.Where(u => u.Id == rolUsuario.RoleId).Single();
                 //DISTINTO AL ADMIN
-                if (usuario.Email != "admin@gmail.com")
+                if (rol.NormalizedName != "ADMINISTRADOR")
                 {
                     var docente = _context.Docentes.Where(d => d.Email == usuario.Email).SingleOrDefault();
 
@@ -126,9 +127,10 @@ namespace ApiAlumnos2026.Controllers
             {
                 //BUSCAMOS EL USUARIO PARA SABER EL EMAIL
                 var usuario = _context.Users.Where(d => d.Id == userId).Single();
-
+                var rolUsuario = _context.UserRoles.Where(u => u.UserId == usuario.Id).Single();
+                var rol = _context.Roles.Where(u => u.Id == rolUsuario.RoleId).Single();
                 //DISTINTO AL ADMIN
-                if (usuario.Email != "admin@gmail.com")
+                if (rol.NormalizedName != "ADMINISTRADOR")
                 {
                     //BUSCAMOS EL DOCENTE RELACIONADO
                     var docente = _context.Docentes.Where(d => d.Email == usuario.Email).SingleOrDefault();

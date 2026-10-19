@@ -15,17 +15,17 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     }
 
- 
+
 
     // Agrega tus DbSet aquí
     public DbSet<NotaAlumno> NotasAlumnos { get; set; }
     public DbSet<Alumno> Alumnos { get; set; }
     public DbSet<Docente> Docentes { get; set; }
-        public DbSet<Carrera> Carreras { get; set; }
+    public DbSet<Carrera> Carreras { get; set; }
     public DbSet<Asignatura> Asignaturas { get; set; }
 
-     public DbSet<AsignaturaDocente> AsignaturasDocentes { get; set; }
-     public DbSet<HistorialNotaAlumno> HistorialNotaAlumnos { get; set; }
-      public DbSet<HistorialAlumno> HistorialAlumnos { get; set; }
-        public DbSet<HistorialDocente> HistorialDocentes { get; set; }
+    public DbSet<AsignaturaDocente> AsignaturasDocentes { get; set; }
+    public DbSet<HistorialNotaAlumno> HistorialNotaAlumnos { get; set; }
+    public DbSet<HistorialAlumno> HistorialAlumnos { get; set; }
+    public DbSet<HistorialDocente> HistorialDocentes { get; set; }
 }
