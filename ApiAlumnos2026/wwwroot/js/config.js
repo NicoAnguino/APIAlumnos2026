@@ -12,6 +12,10 @@ function getEmail() {
   return localStorage.getItem("email");
 }
 
+function getRol() {
+  return localStorage.getItem("rol");
+}
+
 function saveTokens(token, refreshToken) {
   localStorage.setItem("token", token);
   localStorage.setItem("refreshToken", refreshToken);

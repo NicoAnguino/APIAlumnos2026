@@ -31,3 +31,19 @@ function initSidebar() {
     }
   });
 }
+
+function VerificarMenu() {
+  const rol = getRol();
+  const menuAdmin = document.getElementById("menu-admin");
+  const menuDocente = document.getElementById("menu-docente");
+   const menuAlumno = document.getElementById("menu-alumno");
+  if (rol == "DOCENTE"){
+    menuDocente.style.display = "block";
+  }
+  else if (rol == "ALUMNO") {
+    menuAlumno.style.display = "block";
+  }
+  else{
+     menuAdmin.style.display = "block";
+  }
+}

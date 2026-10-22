@@ -1,6 +1,7 @@
 function verificarUsuario(){
     const token = getToken();
     const email = getEmail(); // suponiendo que guardaste el email al hacer login
+    const rol = getRol();
    //console.log(email);
    document.getElementById("email-usuario").textContent = email; 
    //$("#email-usuario").text(email);
@@ -12,6 +13,8 @@ function verificarUsuario(){
         window.location.href = "../views/usuarios/login.html";
         return;
     }
+
+    VerificarMenu();
 }  
 
 async function cerrarSesion() {
